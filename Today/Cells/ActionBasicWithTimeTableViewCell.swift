@@ -9,6 +9,8 @@ import UIKit
 
 class ActionBasicWithTimeTableViewCell: UITableViewCell {
     
+    static let reuseIdentifier = String(describing: ActionBasicWithTimeTableViewCell.self)
+
     @IBOutlet weak var roundView: RoundedCornerView!
     @IBOutlet weak var emojiLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
@@ -23,7 +25,7 @@ class ActionBasicWithTimeTableViewCell: UITableViewCell {
             self.emojiLabel.text = action.emoji
             self.titleLabel.text = action.title
             guard let time = action.dueTime else { return }
-            self.timeLabel.text = Utils.ampmTime(date: time)
+            self.timeLabel.text = Utils.ampmTime(time)
             self.doneButton.setImage(action.isDone ? UIImage(systemName: "checkmark.circle.fill") : UIImage(systemName: "circle"), for: .normal)
 
             //Animation 자연스럽게

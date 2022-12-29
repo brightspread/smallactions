@@ -10,7 +10,7 @@ import Foundation
 class Utils {
     // MARK: Time
     
-    static func ymdEToDate(strDate: String) -> Date? {
+    static func ymdEToDate(_ strDate: String) -> Date? {
         if strDate.isEmpty { return nil }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy년 M월 d일 EEEEE"
@@ -18,21 +18,28 @@ class Utils {
         return dateFormatter.date(from: strDate)
     }
     
-    static func dateToYmdE(date: Date) -> String {
+    static func dateToYmdE(_ date: Date) -> String {
       let formatter = DateFormatter()
       formatter.dateFormat = "yyyy년 M월 d일 EEEEE"
       formatter.locale = Locale(identifier: "ko_KR")
       return formatter.string(from: date)
     }
     
-    static func monthDateDay(date: Date) -> String {
+    static func monthDateDay(_ date: Date) -> String {
       let formatter = DateFormatter()
       formatter.dateFormat = "M월 d일 EEEEE"
       formatter.locale = Locale(identifier: "ko_KR")
       return formatter.string(from: date)
     }
     
-    static func ampmTime(date: Date) -> String {
+    static func monthDate(_ date: Date) -> String {
+      let formatter = DateFormatter()
+      formatter.dateFormat = "M월 d일"
+      formatter.locale = Locale(identifier: "ko_KR")
+      return formatter.string(from: date)
+    }
+
+    static func ampmTime(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
         formatter.dateFormat = "a h:mm"
@@ -69,7 +76,7 @@ class Utils {
         return formatter.string(from: date)
     }
     
-    static func orderDay(str1: String, str2: String) -> Bool {
+    static func orderDay(_ str1: String, _ str2: String) -> Bool {
         if str2 == "일요일" { return true }
         else if str1 == "일요일" { return false }
         if str2 == "토요일" { return true }

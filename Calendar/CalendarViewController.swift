@@ -11,9 +11,10 @@ class CalendarViewController: UIViewController {
     
     lazy var viewModel = { CalendarViewModel() }()
 
+    @IBOutlet weak var calendarCollectionView: UICollectionView!
+    @IBOutlet weak var actionTableView: UITableView!
     @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var yearLabel: UILabel!
-    @IBOutlet weak var calendarCollectionView: UICollectionView!
     @IBOutlet weak var lastMonthImageView: UIImageView!
     @IBOutlet weak var nextMonthImageView: UIImageView!
     @IBOutlet weak var selectedDateLabel: UILabel!
@@ -23,15 +24,22 @@ class CalendarViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.viewModel.delegate = self
-        self.calendarCollectionView.delegate = self
-        self.calendarCollectionView.dataSource = self
+        self.configureData()
         self.registerTouchHandler()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        unregisterTouchHandler()
+    }
+    
+    private func configureData() {
+        self.viewModel.delegate = self
+        self.calendarCollectionView.delegate = self
+        self.calendarCollectionView.dataSource = self
+        self.actionTableView.delegate = self
+        self.actionTableView.dataSource = self
+        self.viewModel.loadActions()
+        self.selectedDateLabel.text = Utils.monthDate(Date.now)
     }
     
     private func registerTouchHandler() {
@@ -117,13 +125,42 @@ extension CalendarViewController: CalendarViewDelegate {
                 guard let value = value as? Date else { return }
                 self.monthLabel.text = Utils.getMonth(value)
                 self.yearLabel.text = Utils.getYear(value)
+                self.selectedDateLabel.text = Utils.monthDate(value)
+            case .selectedData:
+                guard let value = value as? Date else { return }
+                self.selectedDateLabel.text = Utils.monthDate(value)
             }
         }
     }
     
     func actionDidChanged() {
-        
+        self.actionTableView.reloadData()
     }
+}
+
+extension CalendarViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.viewModel.actions.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let action = self.viewModel.actions[indexPath.row]
+        if action.dueTime != nil {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: CalendarActionWithTimeTableViewCell.reuseIdentifier, for: indexPath) as? CalendarActionWithTimeTableViewCell else { return UITableViewCell() }
+            cell.selectionStyle = .none
+            cell.action = action
+            return cell
+        } else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: CalendarActionTableViewCell.reuseIdentifier, for: indexPath) as? CalendarActionTableViewCell else { return UITableViewCell() }
+            cell.selectionStyle = .none
+            cell.action = action
+            return cell
+        }
+    }
+}
+
+extension CalendarViewController: UITableViewDelegate {
+    
 }
 
 protocol CalendarViewDelegate {

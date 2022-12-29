@@ -10,22 +10,24 @@ import CoreData
 
 enum CalendarData: String {
     case baseData = "baseData"
+    case selectedData = "selectedData"
 }
 
 class CalendarViewModel: CalendarViewModelType {
     var delegate: CalendarViewDelegate?
     
-    var actions: [Action]! {
+    var actions: [Action] = []{
         didSet {
             self.delegate?.actionDidChanged()
         }
     }
-
     
     private var selectedDate: Date = Date.now {
         didSet {
-            self.days = generateDaysInMonth(for: baseDate)
+            self.days = generateDaysInMonth(for: self.selectedDate)
             self.delegate?.dateDidChanged()
+            self.delegate?.valueChanged([.selectedData: self.selectedDate])
+            self.loadActions()
         }
     }
     
@@ -34,6 +36,7 @@ class CalendarViewModel: CalendarViewModelType {
             self.days = generateDaysInMonth(for: self.baseDate)
             self.delegate?.dateDidChanged()
             self.delegate?.valueChanged([.baseData: self.baseDate])
+            self.loadActions()
         }
     }
     

@@ -20,7 +20,7 @@ class AlertTableViewController: UITableViewController {
     var selectedRoutines: [String] = [] {
         didSet {
             self.selectedRoutines = self.selectedRoutines.sorted {
-                Utils.orderDay(str1: $0, str2: $1)
+                Utils.orderDay($0, $1)
             }
         }
     }

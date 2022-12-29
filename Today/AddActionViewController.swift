@@ -57,7 +57,6 @@ class AddActionViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.unregisterTouchHandler()
     }
     
     private func configureTodayContents() {
@@ -66,7 +65,7 @@ class AddActionViewController: UIViewController {
             self.deleteView.isHidden = false
         default:
             self.dueDatePicker.date = Date.now
-            self.dateLabel.text = Utils.monthDateDay(date: Date.now)
+            self.dateLabel.text = Utils.monthDateDay(Date.now)
             self.deleteView.isHidden = true
             break
         }
@@ -103,22 +102,22 @@ class AddActionViewController: UIViewController {
     }
     
     @objc private func dueTimeChanged(sender: UIDatePicker) {
-        self.dueTimeLabel.text = Utils.ampmTime(date: sender.date)
+        self.dueTimeLabel.text = Utils.ampmTime(sender.date)
     }
     
     @objc private func dueDateChanged(sender: UIDatePicker) {
-        self.dateLabel.text = Utils.monthDateDay(date: sender.date)
+        self.dateLabel.text = Utils.monthDateDay(sender.date)
     }
     
     @objc private func startDateChanged(sender: UIDatePicker) {
         self.alarmSwitch.isOn = true
-        self.startDateLabel.text = Utils.monthDateDay(date: sender.date)
+        self.startDateLabel.text = Utils.monthDateDay(sender.date)
     }
 
     @objc private func endDateChanged(sender: UIDatePicker) {
         self.alarmSwitch.isOn = true
         
-        self.endDateLabel.text = Utils.monthDateDay(date: sender.date)
+        self.endDateLabel.text = Utils.monthDateDay(sender.date)
     }
 
     
@@ -242,18 +241,18 @@ extension AddActionViewController: AddActionDelegate {
             case .duetime:
                 guard let value = value as? Date else { return }
                 self.timeDatePicker.date = value
-                self.dueTimeLabel.text = Utils.ampmTime(date: value)
+                self.dueTimeLabel.text = Utils.ampmTime(value)
             case .dueDate:
                 guard let value = value as? Date else { return }
                 self.dueDatePicker.date = value
-                self.dateLabel.text = Utils.monthDateDay(date: value)
+                self.dateLabel.text = Utils.monthDateDay(value)
             case .startDate:
                 guard let value = value as? Date else { return }
-                self.startDateLabel.text = Utils.monthDateDay(date: value)
+                self.startDateLabel.text = Utils.monthDateDay(value)
                 self.startDatePicker.date = value
             case .endDate:
                 guard let value = value as? Date else { return }
-                self.endDateLabel.text = Utils.monthDateDay(date: value)
+                self.endDateLabel.text = Utils.monthDateDay(value)
                 self.endDatePicker.date = value
             case .title:
                 guard let value = value as? String else { return }

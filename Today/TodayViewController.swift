@@ -71,12 +71,12 @@ extension TodayViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let action = self.viewModel.actions[indexPath.row]
         if action.dueTime != nil {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "ActionBasicWithTimeTableViewCell", for: indexPath) as? ActionBasicWithTimeTableViewCell else { return UITableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: ActionBasicWithTimeTableViewCell.reuseIdentifier, for: indexPath) as? ActionBasicWithTimeTableViewCell else { return UITableViewCell() }
             cell.selectionStyle = .none
             cell.action = action
             return cell
         } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "ActionBasicTableViewCell", for: indexPath) as? ActionBasicTableViewCell else { return UITableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: ActionBasicTableViewCell.reuseIdentifier, for: indexPath) as? ActionBasicTableViewCell else { return UITableViewCell() }
             cell.selectionStyle = .none
             cell.action = action
             return cell
