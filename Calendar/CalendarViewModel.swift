@@ -16,9 +16,15 @@ enum CalendarData: String {
 class CalendarViewModel: CalendarViewModelType {
     var delegate: CalendarViewDelegate?
     
-    var actions: [Action] = []{
+    var selectedDateActions: [Action] = []{
         didSet {
-            self.delegate?.actionDidChanged()
+            self.delegate?.selectedActionDidChanged()
+        }
+    }
+    
+    var allActions: [Action] = []{
+        didSet {
+//            self.delegate?.actionDidChanged()
         }
     }
     
@@ -27,7 +33,7 @@ class CalendarViewModel: CalendarViewModelType {
             self.days = generateDaysInMonth(for: self.selectedDate)
             self.delegate?.dateDidChanged()
             self.delegate?.valueChanged([.selectedData: self.selectedDate])
-            self.loadActions()
+            self.loadSelectedDateActions()
         }
     }
     
@@ -36,7 +42,7 @@ class CalendarViewModel: CalendarViewModelType {
             self.days = generateDaysInMonth(for: self.baseDate)
             self.delegate?.dateDidChanged()
             self.delegate?.valueChanged([.baseData: self.baseDate])
-            self.loadActions()
+            self.loadSelectedDateActions()
         }
     }
     
@@ -79,10 +85,10 @@ class CalendarViewModel: CalendarViewModelType {
         return CGSize(width: width, height: height)
     }
     
-    func loadActions() {
+    func loadSelectedDateActions() {
         let request: NSFetchRequest<Action> = Action.fetchRequest()
         request.predicate = NSPredicate(format: "dueDate >= %@ && dueDate <= %@", Calendar.current.startOfDay(for: self.selectedDate) as CVarArg, Calendar.current.startOfDay(for: self.selectedDate + 86400) as CVarArg)
-        self.actions = CoreDataManager.shared.fetch(request: request).sorted(by: {
+        self.selectedDateActions = CoreDataManager.shared.fetch(request: request).sorted(by: {
             
             if $0.isDone != $1.isDone {
                 return !$0.isDone
@@ -92,6 +98,26 @@ class CalendarViewModel: CalendarViewModelType {
             guard let rt = $1.dueTime else { return false }
             return lt < rt
         })
+    }
+    
+    func loadAllActions() {
+        let request: NSFetchRequest<Action> = Action.fetchRequest()
+        self.allActions = CoreDataManager.shared.fetch(request: request)
+    }
+    
+    func getActionProgress(_ date: Date) -> Double {
+        let dateActions = self.allActions.filter {
+            guard let dueDate = $0.dueDate else { return false }
+            return dueDate >= date && dueDate <= (date + 86400)
+        }
+        if dateActions.count > 0 {
+            var sum = 0.0
+            dateActions.forEach {
+                if $0.isDone { sum += 1.0 }
+            }
+            return sum/Double(dateActions.count)
+        }
+        return -1
     }
 
 }

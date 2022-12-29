@@ -17,14 +17,41 @@ class DayCell: UICollectionViewCell {
     var day: Day? {
         didSet {
             guard let day = day else { return }
-            dayLabel.text = day.number
-            updateSelectionStatus()
+            self.dayLabel.text = day.number
+            self.updateSelectionStatus()
+        }
+    }
+    
+    var actionProgress: Double = 0 {
+        didSet {
+            self.updateActionProgress()
         }
     }
 }
 
 // MARK: - Appearance
 private extension DayCell {
+    
+    func updateActionProgress() {
+        guard let day = day else { return }
+        if day.isWithinDisplayedMonth {
+            self.background.backgroundColor = .black
+            if self.actionProgress >= 1 {
+                self.background.alpha = 1.0
+                self.dayLabel.textColor = .white
+            } else if self.actionProgress >= 0.5 {
+                self.background.alpha = 0.5
+                self.dayLabel.textColor = .white
+            }else if self.actionProgress >= 0 {
+                self.background.alpha = 0.1
+                self.dayLabel.textColor = .black
+            } else {
+                self.background.alpha = 0
+                self.dayLabel.textColor = .black
+            }
+        }
+    }
+    
     func updateSelectionStatus() {
         guard let day = day else { return }
         if day.isSelected {
@@ -35,9 +62,9 @@ private extension DayCell {
     }
     
     func applySelectedStyle() {
-        self.dayLabel.textColor = .white
+//        self.dayLabel.textColor = .white
 //        self.backgroundColor = .black
-        self.background.backgroundColor = .black
+//        self.background.backgroundColor = .black
         self.selectPointView.isHidden = false
         //    selectionBackgroundView.isHidden = isSmallScreenSize
     }
@@ -51,7 +78,6 @@ private extension DayCell {
         self.background.backgroundColor = .white
         self.backgroundColor = .white
         self.selectPointView.isHidden = true
-
     }
 }
 
