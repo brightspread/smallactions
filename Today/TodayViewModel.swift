@@ -19,7 +19,7 @@ class TodayViewModel: TodayViewModelType {
     
     var selectedDate = Date.now {
         didSet {
-            loadActions()
+            self.loadActions()
         }
     }
     

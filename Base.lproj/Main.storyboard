@@ -279,9 +279,8 @@
                                     </label>
                                 </subviews>
                             </stackView>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="SXf-hP-uSb">
-                                <rect key="frame" x="46" y="618" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="SXf-hP-uSb">
+                                <rect key="frame" x="20" y="599" width="374" height="214"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12월 20일" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="apM-yP-plh">
@@ -327,10 +326,14 @@
                             <constraint firstItem="YiY-aL-4FE" firstAttribute="centerX" secondItem="ha6-1Q-fxD" secondAttribute="centerX" id="BIv-YJ-qPU"/>
                             <constraint firstItem="83F-6H-kKo" firstAttribute="bottom" secondItem="apM-yP-plh" secondAttribute="bottom" id="Bka-9H-A2f"/>
                             <constraint firstItem="83F-6H-kKo" firstAttribute="top" secondItem="iio-RU-FCf" secondAttribute="bottom" constant="24" id="DOT-Pf-fSj"/>
+                            <constraint firstItem="DBT-wU-tH0" firstAttribute="bottom" secondItem="SXf-hP-uSb" secondAttribute="bottom" id="ILJ-SU-Fcq"/>
                             <constraint firstItem="iio-RU-FCf" firstAttribute="top" secondItem="umt-R7-Mhp" secondAttribute="bottom" constant="20" id="JKa-Ek-3b6"/>
                             <constraint firstItem="umt-R7-Mhp" firstAttribute="centerX" secondItem="ha6-1Q-fxD" secondAttribute="centerX" id="JwI-vM-gDH"/>
                             <constraint firstItem="umt-R7-Mhp" firstAttribute="top" secondItem="jS4-AV-GqN" secondAttribute="bottom" constant="24" id="K0G-iv-kiv"/>
+                            <constraint firstItem="SXf-hP-uSb" firstAttribute="leading" secondItem="DBT-wU-tH0" secondAttribute="leading" constant="20" id="LuF-gO-1eZ"/>
+                            <constraint firstItem="DBT-wU-tH0" firstAttribute="trailing" secondItem="SXf-hP-uSb" secondAttribute="trailing" constant="20" id="OnR-Ph-KHc"/>
                             <constraint firstItem="YiY-aL-4FE" firstAttribute="top" secondItem="CQD-VH-ohT" secondAttribute="bottom" constant="4" id="Tda-DY-bcw"/>
+                            <constraint firstItem="SXf-hP-uSb" firstAttribute="top" secondItem="h4d-Vc-tQn" secondAttribute="bottom" constant="24" id="Zxs-eG-m1G"/>
                             <constraint firstItem="DBT-wU-tH0" firstAttribute="trailing" secondItem="jS4-AV-GqN" secondAttribute="trailing" constant="16" id="d8s-Mp-fdn"/>
                             <constraint firstItem="h4d-Vc-tQn" firstAttribute="leading" secondItem="ha6-1Q-fxD" secondAttribute="leading" id="doa-Mr-Ulw"/>
                             <constraint firstItem="SAD-Um-yKp" firstAttribute="top" secondItem="DBT-wU-tH0" secondAttribute="top" id="eRd-KD-ac8"/>
