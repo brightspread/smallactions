@@ -37,6 +37,7 @@ class CoreDataManager {
         }
     }
     
+    // 신규 실천 추가
     @discardableResult
     func insertAction(_ action: ActionItem) -> Bool {
         let entity = NSEntityDescription.entity(forEntityName: "Action", in: self.context)
@@ -76,6 +77,7 @@ class CoreDataManager {
         }
     }
     
+    // 실천 변경
     @discardableResult
     func editAction(_ action: ActionItem) -> Bool {
         let request: NSFetchRequest<Action> = Action.fetchRequest()
@@ -116,6 +118,7 @@ class CoreDataManager {
         }
     }
     
+    // 실천 여부 변경
     func editAction(_ id: String, isDone: Bool) -> Bool {
         let request: NSFetchRequest<Action> = Action.fetchRequest()
         request.predicate = NSPredicate(format: "id = %@", id)

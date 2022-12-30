@@ -32,6 +32,13 @@ class Utils {
       return formatter.string(from: date)
     }
     
+    static func dateToE(_ date: Date) -> String {
+      let formatter = DateFormatter()
+      formatter.dateFormat = "EEEEE요일"
+      formatter.locale = Locale(identifier: "ko_KR")
+      return formatter.string(from: date)
+    }
+    
     static func monthDate(_ date: Date) -> String {
       let formatter = DateFormatter()
       formatter.dateFormat = "M월 d일"

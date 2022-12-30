@@ -18,20 +18,20 @@ class CalendarViewModel: CalendarViewModelType {
     
     var selectedDateActions: [Action] = []{
         didSet {
-            self.delegate?.selectedActionDidChanged()
+            self.delegate?.updateCalendar()
         }
     }
     
     var allActions: [Action] = []{
         didSet {
-//            self.delegate?.actionDidChanged()
+            self.delegate?.updateCalendar()
         }
     }
     
     private var selectedDate: Date = Date.now {
         didSet {
             self.days = generateDaysInMonth(for: self.selectedDate)
-            self.delegate?.dateDidChanged()
+            self.delegate?.updateCalendar()
             self.delegate?.valueChanged([.selectedData: self.selectedDate])
             self.loadSelectedDateActions()
         }
@@ -40,18 +40,16 @@ class CalendarViewModel: CalendarViewModelType {
     private var baseDate: Date = Date.now {
         didSet {
             self.days = generateDaysInMonth(for: self.baseDate)
-            self.delegate?.dateDidChanged()
+            self.selectedDate = self.baseDate
             self.delegate?.valueChanged([.baseData: self.baseDate])
-            self.loadSelectedDateActions()
         }
     }
     
     lazy var days = generateDaysInMonth(for: baseDate)
     
     private var numberOfWeeksInBaseDate: Int {
-        self.calendar.range(of: .weekOfMonth, in: .month, for: baseDate)?.count ?? 0
+        self.calendar.range(of: .weekOfMonth, in: .month, for: selectedDate)?.count ?? 0
     }
-    
     
     private let calendar = Calendar(identifier: .gregorian)
     private lazy var numberDateFormatter: DateFormatter = {
@@ -60,18 +58,35 @@ class CalendarViewModel: CalendarViewModelType {
         return dateFormatter
     }()
     
+    func configureData() {
+        self.loadSelectedDateActions()
+        self.loadAllActions()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(changeActionNotification(_ :)),
+            name: NSNotification.Name("changeAction"),
+            object: nil
+        )
+    }
+    
+    @objc func changeActionNotification(_ notification: Notification) {
+        self.loadAllActions()
+        self.loadSelectedDateActions()
+    }
+    
     func showLastMonth() {
         self.baseDate = self.calendar.date(
             byAdding: .month,
             value: -1,
-            to: self.baseDate
+            to: self.selectedDate
         ) ?? self.baseDate
     }
     
     func showNextMonth() {
         self.baseDate = self.calendar.date(byAdding: .month,
                                            value: 1,
-                                           to: self.baseDate) ?? self.baseDate
+                                           to: self.selectedDate) ?? self.baseDate
 
     }
     
@@ -82,6 +97,7 @@ class CalendarViewModel: CalendarViewModelType {
     func getCalendarSize(width: CGFloat, height: CGFloat) -> CGSize {
         let width = Int(width / 7)
         let height = Int(height) / numberOfWeeksInBaseDate
+        print("\(numberOfWeeksInBaseDate)")
         return CGSize(width: width, height: height)
     }
     

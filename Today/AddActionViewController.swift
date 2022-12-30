@@ -34,7 +34,7 @@ class AddActionViewController: UIViewController {
     @IBOutlet weak var endDateLabel: UILabel!
 
     
-    private var selectedRoutines: [String]?
+    private var selectedRoutines: [String] = []
     
     private lazy var routinesTapGesutre = UITapGestureRecognizer(target: self, action: #selector(routinesTouched))
     private lazy var tagsTapGesutre = UITapGestureRecognizer(target: self, action: #selector(tagsTouched))
@@ -83,7 +83,6 @@ class AddActionViewController: UIViewController {
         self.startDatePicker.addTarget(self, action: #selector(startDateChanged(sender:)), for: .valueChanged)
         self.endDatePicker.addTarget(self, action: #selector(endDateChanged(sender:)), for: .valueChanged)
 
-
         self.routinesLabel.addGestureRecognizer(routinesTapGesutre)
         self.tagsLabel.addGestureRecognizer(tagsTapGesutre)
         self.deleteView.addGestureRecognizer(deleteTapGesutre)
@@ -97,8 +96,8 @@ class AddActionViewController: UIViewController {
     }
 
     @objc private func alarmSwitchChanged(sender: UISwitch) {
-        self.startDateView.isHidden = !sender.isOn
-        self.endDateView.isHidden = !sender.isOn
+//        self.startDateView.isHidden = !sender.isOn
+//        self.endDateView.isHidden = !sender.isOn
     }
     
     @objc private func dueTimeChanged(sender: UIDatePicker) {
@@ -107,20 +106,17 @@ class AddActionViewController: UIViewController {
     
     @objc private func dueDateChanged(sender: UIDatePicker) {
         self.dateLabel.text = Utils.monthDateDay(sender.date)
+        self.viewModel.dueDateChanged(sender.date)
     }
     
     @objc private func startDateChanged(sender: UIDatePicker) {
-        self.alarmSwitch.isOn = true
         self.startDateLabel.text = Utils.monthDateDay(sender.date)
     }
 
     @objc private func endDateChanged(sender: UIDatePicker) {
-        self.alarmSwitch.isOn = true
-        
         self.endDateLabel.text = Utils.monthDateDay(sender.date)
     }
 
-    
     @objc private func titleTextFieldDidChnage(_ textField: UITextField) {
         self.validateInputField()
     }
@@ -160,14 +156,16 @@ class AddActionViewController: UIViewController {
 
     private func saveAction() {
         guard let title = self.titleTextField.text else { return }
+        
         self.viewModel.saveAction(title: title,
                                   emoji: self.emojiTextField.text ?? nil,
                                   isDone: self.doneButton.isSelected,
                                   isAlarmOn: self.alarmSwitch.isOn,
                                   dueDate: self.dueDatePicker.date,
                                   dueTime: self.timeDatePicker.date,
-                                  startDate: self.startDatePicker.date,
-                                  endDate: self.endDatePicker.date)
+                                  routines: self.selectedRoutines,
+                                  startDate: self.selectedRoutines.isEmpty ? nil : self.startDatePicker.date,
+                                  endDate: self.selectedRoutines.isEmpty ? nil : self.endDatePicker.date)
     }
     @objc private func dateTouched() {
         let alert = AlertService.datePickerAlert()
@@ -179,13 +177,7 @@ class AddActionViewController: UIViewController {
 
     }
     @objc private func routinesTouched() {
-        let alert: UIAlertController
-        guard let routines = selectedRoutines else {
-            alert = AlertService.routineDayAlert(vc: self, routines: [])
-            AlertService.presentAlert(alert: alert, vc: self)
-            return
-        }
-        alert =  AlertService.routineDayAlert(vc: self, routines: routines)
+        let alert =  AlertService.routineDayAlert(vc: self, routines: self.selectedRoutines)
         AlertService.presentAlert(alert: alert, vc: self)
     }
     @objc private func tagsTouched() {
@@ -230,44 +222,44 @@ extension AddActionViewController: UITextFieldDelegate {
 
 extension AddActionViewController: AddActionDelegate {
     func valueChanged(_ dic: Dictionary<ActionData, Any>) {
+        print("valueChanged : \(dic)")
         for (key, value) in dic {
             switch key {
             case .routines:
-                guard let value = value as? [String] else { return }
+                guard let value = value as? [String] else { continue }
                 self.selectedRoutines = value
                 self.routinesLabel.text = value.isEmpty ? "없음 >" : value.map {
                     return String($0.first!)
                 }.joined(separator: ", ")
+                self.startDateView.isHidden = value.isEmpty
+                self.endDateView.isHidden = value.isEmpty
             case .duetime:
-                guard let value = value as? Date else { return }
+                guard let value = value as? Date else { continue }
                 self.timeDatePicker.date = value
                 self.dueTimeLabel.text = Utils.ampmTime(value)
             case .dueDate:
-                guard let value = value as? Date else { return }
+                guard let value = value as? Date else { continue }
                 self.dueDatePicker.date = value
                 self.dateLabel.text = Utils.monthDateDay(value)
             case .startDate:
-                guard let value = value as? Date else { return }
+                guard let value = value as? Date else { continue }
                 self.startDateLabel.text = Utils.monthDateDay(value)
                 self.startDatePicker.date = value
             case .endDate:
-                guard let value = value as? Date else { return }
+                guard let value = value as? Date else { continue }
                 self.endDateLabel.text = Utils.monthDateDay(value)
                 self.endDatePicker.date = value
             case .title:
-                guard let value = value as? String else { return }
+                guard let value = value as? String else { continue }
                 self.titleTextField.text = value
             case .emoji:
-                guard let value = value as? String else { return }
+                guard let value = value as? String else { continue }
                 self.emojiTextField.text = value
             case .alarmSwitch:
-                guard let value = value as? Bool else { return }
+                guard let value = value as? Bool else { continue }
                 self.alarmSwitch.setOn(value, animated: false)
-                self.startDateView.isHidden = !self.alarmSwitch.isOn
-                self.endDateView.isHidden = !self.alarmSwitch.isOn
-
             case .isDone:
-                guard let value = value as? Bool else { return }
+                guard let value = value as? Bool else { continue }
                 self.doneButton.isSelected = value
                 self.doneButton.setImage(value ?
                                          UIImage(systemName: "checkmark.circle.fill")

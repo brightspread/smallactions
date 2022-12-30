@@ -19,6 +19,7 @@ class CalendarViewController: UIViewController {
     @IBOutlet weak var nextMonthImageView: UIImageView!
     @IBOutlet weak var selectedDateLabel: UILabel!
     @IBOutlet weak var contentsViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var calendarViewHeight: NSLayoutConstraint!
     
     private lazy var lastMonthHandler = UITapGestureRecognizer(target: self, action: #selector(lastMonthTouched))
     private lazy var nextMonthHandler = UITapGestureRecognizer(target: self, action: #selector(nextMonthTouched))
@@ -39,8 +40,14 @@ class CalendarViewController: UIViewController {
         self.calendarCollectionView.dataSource = self
         self.actionTableView.delegate = self
         self.actionTableView.dataSource = self
-        self.viewModel.loadSelectedDateActions()
-        self.viewModel.loadAllActions()
+        self.viewModel.configureData()
+        
+        if self.viewModel.days.count >= 42 {
+            self.calendarViewHeight.constant = 325
+        } else {
+            self.calendarViewHeight.constant = 275
+        }
+        self.calendarCollectionView.layoutIfNeeded()
         self.selectedDateLabel.text = Utils.monthDate(Date.now)
     }
     
@@ -117,8 +124,17 @@ extension CalendarViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension CalendarViewController: CalendarViewDelegate {
-    func dateDidChanged() {
+    func updateCalendar() {
+        DispatchQueue.main.async {
+            if self.viewModel.days.count >= 42 {
+                self.calendarViewHeight.constant = 325
+            } else {
+                self.calendarViewHeight.constant = 275
+            }
+            self.calendarCollectionView.layoutIfNeeded()
+        }
         self.calendarCollectionView.reloadData()
+        self.actionTableView.reloadData()
     }
     
     func valueChanged(_ dic: Dictionary<CalendarData, Any>) {
@@ -136,10 +152,6 @@ extension CalendarViewController: CalendarViewDelegate {
                 self.selectedDateLabel.text = Utils.monthDate(value)
             }
         }
-    }
-    
-    func selectedActionDidChanged() {
-        self.actionTableView.reloadData()
     }
 }
 
@@ -167,11 +179,16 @@ extension CalendarViewController: UITableViewDataSource {
 }
 
 extension CalendarViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let action = self.viewModel.selectedDateActions[indexPath.row]
+        guard let viewController = AddActionViewController.buildAddActionViewController(self)
+        else { return }
+        viewController.viewModel.actionEditorMode = .edit(action)
+        self.present(viewController, animated: true, completion: nil)
+    }
 }
 
 protocol CalendarViewDelegate {
-    func dateDidChanged()
+    func updateCalendar()
     func valueChanged(_ dic: Dictionary<CalendarData, Any>)
-    func selectedActionDidChanged()
 }
