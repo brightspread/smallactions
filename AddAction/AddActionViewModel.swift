@@ -214,24 +214,6 @@ class AddActionViewModel: AddActionViewModelType {
         }
     }
     
-    // 반복 액션 제거
-    func deleteRoutines() {
-        switch actionEditorMode {
-        case .new:
-            print("error new인데 루틴 제거")
-            break
-        case .edit(let action):
-            var actionId = action.id
-            while actionId != nil {
-                guard let Id = actionId else { return }
-                guard let action = CoreDataManager.shared.fetchAction(id: Id) else { return }
-                actionId = action.rNextAction
-                CoreDataManager.shared.delete(action)
-                // 반복 제거할때는 beforeAction 생각할 필요 없음. 뒤로 쭉 삭제니까
-            }
-        }
-    }
-    
     // 루틴 추가
     // extendingOption = 루틴 마지막날 아이템으로 연장하는 경우
     private func routineInsertActions(_ actionItem: ActionItem, extendingOption: Bool = false) {
@@ -272,7 +254,7 @@ class AddActionViewModel: AddActionViewModelType {
                                             createdTime: Date.now.description,
                                             unit: actionItem.unit,
                                             category: actionItem.category,
-                                            rNextAction: nextActionId
+                                            rNextAction: nextActionId,
                                             rBeforeAction: nil)
                     CoreDataManager.shared.insertAction(action)
                     if let nextId = nextActionId  {
@@ -341,12 +323,54 @@ class AddActionViewModel: AddActionViewModelType {
                     CoreDataManager.shared.editAction(beforeAction, rNextAction: nextAction)
                     CoreDataManager.shared.editAction(nextAction, rBeforeAction: beforeAction)
                 }
+            } else if let beforeAction = action.rBeforeAction { // 루틴의 마지막을 지우는경우
+                if !beforeAction.isEmpty {
+                    CoreDataManager.shared.editAction(beforeAction, rNextAction: nil)
+                    self.changeRoutineEndDate(id: beforeAction)
+                }
             }
             CoreDataManager.shared.delete(action)
         default:
             break
         }
     }
+    
+    // 반복 액션 제거
+    func deleteRoutines() {
+        switch actionEditorMode {
+        case .new:
+            print("error new인데 루틴 제거")
+            break
+        case .edit(let action):
+            var actionId = action.id
+
+            if let beforeId = action.rBeforeAction {
+                CoreDataManager.shared.editAction(beforeId, rNextAction: nil)
+                self.changeRoutineEndDate(id: beforeId)
+                // 중간부터 제거하는거라면 이전 링크 제거
+            }
+            while actionId != nil {
+                guard let Id = actionId else { return }
+                guard let action = CoreDataManager.shared.fetchAction(id: Id) else { return }
+                actionId = action.rNextAction
+                CoreDataManager.shared.delete(action)
+            }
+        }
+    }
+    
+    func changeRoutineEndDate(id: String?) {
+        guard let id = id else { return }
+        if let beforeActionDueDate = CoreDataManager.shared.fetchAction(id: id)?.dueDate {
+            var actionId = id
+            while actionId != nil {
+                CoreDataManager.shared.editAction(actionId, endDate: beforeActionDueDate)
+                guard let action = CoreDataManager.shared.fetchAction(id: actionId) else { return }
+                guard let beforeAction = action.rBeforeAction else { return }
+                actionId = beforeAction
+            }
+        }
+    }
+
     
     @objc func routinesSelectNotification(_ notification: Notification) {
         guard let routines = notification.object as? [String] else { return }

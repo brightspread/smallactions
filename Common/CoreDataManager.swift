@@ -152,6 +152,32 @@ class CoreDataManager {
         }
     }
     
+    // 실천 여부 변경
+    func editAction(_ id: String, endDate: Date) -> Bool {
+        let request: NSFetchRequest<Action> = Action.fetchRequest()
+        request.predicate = NSPredicate(format: "id = %@", id)
+        let result = fetch(request: request)
+        if let managedObject = result.first {
+            managedObject.setValue(endDate, forKey: "endDate")
+            
+            do {
+                try self.context.save()
+                NotificationCenter.default.post(
+                    name: NSNotification.Name("changeAction"),
+                    object: nil,
+                    userInfo: nil)
+
+                return true
+            } catch {
+                print(error.localizedDescription)
+                return false
+            }
+
+        } else {
+            return false
+        }
+    }
+    
     func editAction(_ id: String, rBeforeAction: String? = "") -> Bool {
         let request: NSFetchRequest<Action> = Action.fetchRequest()
         request.predicate = NSPredicate(format: "id = %@", id)
