@@ -31,8 +31,8 @@ class CalendarViewModel: CalendarViewModelType {
     private var selectedDate: Date = Date.now {
         didSet {
             self.days = generateDaysInMonth(for: self.selectedDate)
-            self.delegate?.updateCalendar()
             self.delegate?.valueChanged([.selectedData: self.selectedDate])
+            self.delegate?.updateCalendar()
             self.loadSelectedDateActions()
         }
     }
@@ -97,7 +97,7 @@ class CalendarViewModel: CalendarViewModelType {
     func getCalendarSize(width: CGFloat, height: CGFloat) -> CGSize {
         let width = Int(width / 7)
         let height = Int(height) / numberOfWeeksInBaseDate
-        print("\(numberOfWeeksInBaseDate)")
+//        print("\(numberOfWeeksInBaseDate)")
         return CGSize(width: width, height: height)
     }
     

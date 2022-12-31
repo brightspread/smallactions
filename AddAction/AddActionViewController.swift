@@ -26,9 +26,6 @@ class AddActionViewController: UIViewController {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var timeDatePicker: UIDatePicker!
     @IBOutlet weak var dueTimeLabel: UILabel!
-    @IBOutlet weak var startDateView: UIView!
-    @IBOutlet weak var startDatePicker: UIDatePicker!
-    @IBOutlet weak var startDateLabel: UILabel!
     @IBOutlet weak var endDateView: UIView!
     @IBOutlet weak var endDatePicker: UIDatePicker!
     @IBOutlet weak var endDateLabel: UILabel!
@@ -65,7 +62,7 @@ class AddActionViewController: UIViewController {
             self.deleteView.isHidden = false
         default:
             self.dueDatePicker.date = Date.now
-            self.dateLabel.text = Utils.monthDateDay(Date.now)
+            self.dateLabel.text = Utils.monthDateDay(Date.now) + " >"
             self.deleteView.isHidden = true
             break
         }
@@ -80,7 +77,6 @@ class AddActionViewController: UIViewController {
         self.alarmSwitch.addTarget(self, action: #selector(alarmSwitchChanged(sender:)), for: .valueChanged)
         self.timeDatePicker.addTarget(self, action: #selector(dueTimeChanged(sender:)), for: .valueChanged)
         self.dueDatePicker.addTarget(self, action: #selector(dueDateChanged(sender:)), for: .valueChanged)
-        self.startDatePicker.addTarget(self, action: #selector(startDateChanged(sender:)), for: .valueChanged)
         self.endDatePicker.addTarget(self, action: #selector(endDateChanged(sender:)), for: .valueChanged)
 
         self.routinesLabel.addGestureRecognizer(routinesTapGesutre)
@@ -96,7 +92,6 @@ class AddActionViewController: UIViewController {
     }
 
     @objc private func alarmSwitchChanged(sender: UISwitch) {
-//        self.startDateView.isHidden = !sender.isOn
 //        self.endDateView.isHidden = !sender.isOn
     }
     
@@ -105,16 +100,12 @@ class AddActionViewController: UIViewController {
     }
     
     @objc private func dueDateChanged(sender: UIDatePicker) {
-        self.dateLabel.text = Utils.monthDateDay(sender.date)
+        self.dateLabel.text = Utils.monthDateDay(sender.date) + " >"
         self.viewModel.dueDateChanged(sender.date)
-    }
-    
-    @objc private func startDateChanged(sender: UIDatePicker) {
-        self.startDateLabel.text = Utils.monthDateDay(sender.date)
     }
 
     @objc private func endDateChanged(sender: UIDatePicker) {
-        self.endDateLabel.text = Utils.monthDateDay(sender.date)
+        self.endDateLabel.text = Utils.monthDateDay(sender.date) + " >"
     }
 
     @objc private func titleTextFieldDidChnage(_ textField: UITextField) {
@@ -137,7 +128,6 @@ class AddActionViewController: UIViewController {
         self.emojiTextField.resignFirstResponder()
         self.titleTextField.resignFirstResponder()
         self.saveAction()
-        self.dismiss(animated: true)
     }
     
     @IBAction func cancelButtonTouched(_ sender: Any) {
@@ -156,16 +146,42 @@ class AddActionViewController: UIViewController {
 
     private func saveAction() {
         guard let title = self.titleTextField.text else { return }
-        
-        self.viewModel.saveAction(title: title,
-                                  emoji: self.emojiTextField.text ?? nil,
-                                  isDone: self.doneButton.isSelected,
-                                  isAlarmOn: self.alarmSwitch.isOn,
-                                  dueDate: self.dueDatePicker.date,
-                                  dueTime: self.timeDatePicker.date,
-                                  routines: self.selectedRoutines,
-                                  startDate: self.selectedRoutines.isEmpty ? nil : self.startDatePicker.date,
-                                  endDate: self.selectedRoutines.isEmpty ? nil : self.endDatePicker.date)
+        if viewModel.existNextAction() {
+            // 딸려있는 실천이 있을때
+            let alert = AlertService.saveRoutineActionAlert(
+                thisOnlyHandler: { [weak self] _ in
+                    self?.viewModel.saveAction(title: title,
+                                              emoji: self?.emojiTextField.text ?? nil,
+                                              isDone: self?.doneButton.isSelected,
+                                              isAlarmOn: self?.alarmSwitch.isOn,
+                                              dueDate: self?.dueDatePicker.date,
+                                              dueTime: self?.timeDatePicker.date,
+                                              routines: nil)
+                    self?.dismiss(animated: true)
+                }, afterAllHandler: { [weak self] _ in
+                    guard let routines = self?.selectedRoutines else { return }
+                    self?.viewModel.saveRoutineActions(title: title,
+                                                       emoji: self?.emojiTextField.text ?? nil,
+                                                       isDone: self?.doneButton.isSelected,
+                                                       isAlarmOn: self?.alarmSwitch.isOn,
+                                                       dueDate: self?.dueDatePicker.date,
+                                                       dueTime: self?.timeDatePicker.date,
+                                                       routines: routines,
+                                                       endDate: routines.isEmpty ? nil : self?.endDatePicker.date)
+                    self?.dismiss(animated: true)
+                })
+            AlertService.presentAlert(alert: alert, vc: self)
+        } else {
+            self.viewModel.saveAction(title: title,
+                                      emoji: self.emojiTextField.text ?? nil,
+                                      isDone: self.doneButton.isSelected,
+                                      isAlarmOn: self.alarmSwitch.isOn,
+                                      dueDate: self.dueDatePicker.date,
+                                      dueTime: self.timeDatePicker.date,
+                                      routines: self.selectedRoutines,
+                                      endDate: self.selectedRoutines.isEmpty ? nil : self.endDatePicker.date)
+            self.dismiss(animated: true)
+        }
     }
     @objc private func dateTouched() {
         let alert = AlertService.datePickerAlert()
@@ -184,8 +200,21 @@ class AddActionViewController: UIViewController {
         
     }
     @objc private func deleteViewTouched() {
-        self.viewModel.deleteAction()
-        self.dismiss(animated: true)
+        if viewModel.existNextAction() {
+            // 딸려있는 실천이 있을때
+            let alert = AlertService.deleteRoutineActionAlert(
+                thisOnlyHandler: { [weak self] _ in
+                    self?.viewModel.deleteAction()
+                    self?.dismiss(animated: true)
+                }, afterAllHandler: { [weak self] _ in
+                    self?.viewModel.deleteRoutines()
+                    self?.dismiss(animated: true)
+                })
+            AlertService.presentAlert(alert: alert, vc: self)
+        } else {
+            self.viewModel.deleteAction()
+            self.dismiss(animated: true)
+        }
     }
     
     static func buildAddActionViewController(_ context: UIViewController) -> AddActionViewController? {
@@ -230,24 +259,19 @@ extension AddActionViewController: AddActionDelegate {
                 self.selectedRoutines = value
                 self.routinesLabel.text = value.isEmpty ? "없음 >" : value.map {
                     return String($0.first!)
-                }.joined(separator: ", ")
-                self.startDateView.isHidden = value.isEmpty
+                }.joined(separator: ", ") + " >"
                 self.endDateView.isHidden = value.isEmpty
             case .duetime:
                 guard let value = value as? Date else { continue }
                 self.timeDatePicker.date = value
-                self.dueTimeLabel.text = Utils.ampmTime(value)
+                self.dueTimeLabel.text = Utils.ampmTime(value) + " >"
             case .dueDate:
                 guard let value = value as? Date else { continue }
                 self.dueDatePicker.date = value
-                self.dateLabel.text = Utils.monthDateDay(value)
-            case .startDate:
-                guard let value = value as? Date else { continue }
-                self.startDateLabel.text = Utils.monthDateDay(value)
-                self.startDatePicker.date = value
+                self.dateLabel.text = Utils.monthDateDay(value) + " >"
             case .endDate:
                 guard let value = value as? Date else { continue }
-                self.endDateLabel.text = Utils.monthDateDay(value)
+                self.endDateLabel.text = Utils.monthDateDay(value) + " >"
                 self.endDatePicker.date = value
             case .title:
                 guard let value = value as? String else { continue }

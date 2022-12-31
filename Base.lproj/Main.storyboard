@@ -1174,21 +1174,21 @@
                                 </connections>
                             </button>
                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" datePickerMode="date" style="compact" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mYR-1Q-vVa">
-                                <rect key="frame" x="24" y="187" width="78" height="19"/>
+                                <rect key="frame" x="24" y="187" width="100" height="19"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="19" id="hny-Jc-ab1"/>
-                                    <constraint firstAttribute="width" constant="78" id="usW-so-0aN"/>
+                                    <constraint firstAttribute="width" constant="100" id="usW-so-0aN"/>
                                 </constraints>
                                 <date key="date" timeIntervalSinceReferenceDate="693822952.32211697">
                                     <!--2022-12-27 08:35:52 +0000-->
                                 </date>
                                 <locale key="locale" localeIdentifier="ko"/>
                             </datePicker>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="11월 30일 화" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1vL-Zg-EUa">
-                                <rect key="frame" x="24" y="187" width="150" height="19.333333333333343"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="11월 30일 화 &gt;" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1vL-Zg-EUa">
+                                <rect key="frame" x="24" y="187" width="100" height="19.333333333333343"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="150" id="G3S-XV-7Vw"/>
+                                    <constraint firstAttribute="width" constant="100" id="G3S-XV-7Vw"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="AppleSDGothicNeo-Regular" family="Apple SD Gothic Neo" pointSize="16"/>
                                 <nil key="textColor"/>
@@ -1247,18 +1247,18 @@
                                         <rect key="frame" x="0.0" y="0.0" width="390" height="36"/>
                                         <subviews>
                                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="1" style="compact" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xug-jN-iXs">
-                                                <rect key="frame" x="276" y="1" width="90" height="34.333333333333336"/>
+                                                <rect key="frame" x="266" y="1" width="100" height="34.333333333333336"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="90" id="7xY-dS-JV2"/>
+                                                    <constraint firstAttribute="width" constant="100" id="7xY-dS-JV2"/>
                                                 </constraints>
                                                 <date key="date" timeIntervalSinceReferenceDate="693842788.36685395">
                                                     <!--2022-12-27 14:06:28 +0000-->
                                                 </date>
                                                 <locale key="locale" localeIdentifier="ko_KR"/>
                                             </datePicker>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오후 10:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DFh-bD-hwF">
-                                                <rect key="frame" x="276" y="1" width="90" height="34.333333333333336"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오후 10:00 &gt;" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DFh-bD-hwF">
+                                                <rect key="frame" x="266" y="1" width="100" height="34.333333333333336"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" name="AppleSDGothicNeo-Regular" family="Apple SD Gothic Neo" pointSize="18"/>
                                                 <color key="textColor" red="0.3803921569" green="0.3803921569" blue="0.3803921569" alpha="1" colorSpace="calibratedRGB"/>
@@ -1494,9 +1494,6 @@
                         <outlet property="endDateView" destination="CBi-fe-lGW" id="Z9S-gb-vCu"/>
                         <outlet property="routinesLabel" destination="0Y4-GC-Gko" id="q1g-N8-jEi"/>
                         <outlet property="saveButton" destination="Dfv-d3-kT1" id="OFw-AG-BUK"/>
-                        <outlet property="startDateLabel" destination="lsZ-zS-mct" id="NaG-lX-CZs"/>
-                        <outlet property="startDatePicker" destination="BvV-xn-x93" id="Uq9-g7-EwV"/>
-                        <outlet property="startDateView" destination="20F-kL-LB2" id="lQI-bj-oyx"/>
                         <outlet property="tagsLabel" destination="JCv-c5-ta4" id="Xhh-VF-Ld5"/>
                         <outlet property="timeDatePicker" destination="xug-jN-iXs" id="DX2-8P-SXe"/>
                         <outlet property="titleTextField" destination="5Wo-WW-ll7" id="w1E-Fi-D64"/>

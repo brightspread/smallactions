@@ -16,11 +16,12 @@ struct ActionItem {
     var isDone: Bool?
     var isAlarmOn: Bool?
     var routines: [String]?
-    var startDate: Date?
     var endDate: Date?
     var tags: [String]?
     var color: String?
     var createdTime: String?
     var unit: String?
     var category: String?
+    var rNextAction: String?
+    var rBeforeAction: String?
 }

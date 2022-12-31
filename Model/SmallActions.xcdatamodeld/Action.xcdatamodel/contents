@@ -11,8 +11,9 @@
         <attribute name="id" attributeType="String"/>
         <attribute name="isAlarmOn" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isDone" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="rBeforeAction" optional="YES" attributeType="String"/>
+        <attribute name="rNextAction" optional="YES" attributeType="String" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
         <attribute name="routines" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
-        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="unit" optional="YES" attributeType="String"/>

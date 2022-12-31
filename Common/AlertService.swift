@@ -125,4 +125,30 @@ struct AlertService {
         
         return checkAlert
     }
+    
+    static func saveRoutineActionAlert(thisOnlyHandler: @escaping (UIAlertAction) -> Void, afterAllHandler: @escaping (UIAlertAction) -> Void) -> UIAlertController {
+        let alert = buildAlertControllerWithApplyTheme(title: nil, message: "반복되는 실천입니다.", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "취소" , style: .destructive) { (UIAlertAction) in
+            alert.dismiss(animated: true, completion: nil)
+        }
+        let thisOnlyAction = UIAlertAction(title: "이 실천만 저장", style: .destructive, handler: thisOnlyHandler)
+        alert.addAction(thisOnlyAction)
+        let afterAllAction = UIAlertAction(title: "이후 실천에 대해 저장", style: .destructive, handler: afterAllHandler)
+        alert.addAction(afterAllAction)
+        alert.addAction(cancelAction)
+        return alert
+    }
+    
+    static func deleteRoutineActionAlert(thisOnlyHandler: @escaping (UIAlertAction) -> Void, afterAllHandler: @escaping (UIAlertAction) -> Void) -> UIAlertController {
+        let alert = buildAlertControllerWithApplyTheme(title: nil, message: "이 실천을 삭제하시겠습니까? 반복되는 실천입니다.", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "취소" , style: UIAlertAction.Style.cancel) { (UIAlertAction) in
+            alert.dismiss(animated: true, completion: nil)
+        }
+        let thisOnlyAction = UIAlertAction(title: "이 실천만 삭제", style: .destructive, handler: thisOnlyHandler)
+        alert.addAction(thisOnlyAction)
+        let afterAllAction = UIAlertAction(title: "이후 모든 이벤트 삭제", style: .destructive, handler: afterAllHandler)
+        alert.addAction(afterAllAction)
+        alert.addAction(cancelAction)
+        return alert
+    }
 }

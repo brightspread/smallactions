@@ -52,13 +52,14 @@ class CoreDataManager {
             managedObject.setValue(action.id, forKey: "id")
             managedObject.setValue(action.isAlarmOn, forKey: "isAlarmOn")
             managedObject.setValue(action.routines, forKey: "routines")
-            managedObject.setValue(action.startDate, forKey: "startDate")
             managedObject.setValue(action.tags, forKey: "tags")
             managedObject.setValue(action.dueTime, forKey: "dueTime")
             managedObject.setValue(action.dueDate, forKey: "dueDate")
             managedObject.setValue(action.title, forKey: "title")
             managedObject.setValue(action.unit, forKey: "unit")
             managedObject.setValue(action.isDone, forKey: "isDone")
+            managedObject.setValue(action.rNextAction, forKey: "rNextAction")
+            managedObject.setValue(action.rBeforeAction, forKey: "rBeforeAction")
 
             do {
                 try self.context.save()
@@ -91,14 +92,15 @@ class CoreDataManager {
             managedObject.setValue(action.endDate, forKey: "endDate")
             managedObject.setValue(action.isAlarmOn, forKey: "isAlarmOn")
             managedObject.setValue(action.routines, forKey: "routines")
-            managedObject.setValue(action.startDate, forKey: "startDate")
             managedObject.setValue(action.tags, forKey: "tags")
             managedObject.setValue(action.dueTime, forKey: "dueTime")
             managedObject.setValue(action.dueDate, forKey: "dueDate")
             managedObject.setValue(action.title, forKey: "title")
             managedObject.setValue(action.unit, forKey: "unit")
             managedObject.setValue(action.isDone, forKey: "isDone")
-            
+            managedObject.setValue(action.rNextAction, forKey: "rNextAction")
+            managedObject.setValue(action.rBeforeAction, forKey: "rBeforeAction")
+
             do {
                 try self.context.save()
                 NotificationCenter.default.post(
@@ -118,6 +120,12 @@ class CoreDataManager {
         }
     }
     
+    func fetchAction(id: String) -> Action? {
+        let request: NSFetchRequest<Action> = Action.fetchRequest()
+        request.predicate = NSPredicate(format: "id = %@", id)
+        return fetch(request: request).first
+    }
+    
     // 실천 여부 변경
     func editAction(_ id: String, isDone: Bool) -> Bool {
         let request: NSFetchRequest<Action> = Action.fetchRequest()
@@ -133,6 +141,52 @@ class CoreDataManager {
                     object: nil,
                     userInfo: nil)
 
+                return true
+            } catch {
+                print(error.localizedDescription)
+                return false
+            }
+
+        } else {
+            return false
+        }
+    }
+    
+    func editAction(_ id: String, rBeforeAction: String? = "") -> Bool {
+        let request: NSFetchRequest<Action> = Action.fetchRequest()
+        request.predicate = NSPredicate(format: "id = %@", id)
+        let result = fetch(request: request)
+        if let managedObject = result.first {
+            managedObject.setValue(rBeforeAction, forKey: "rBeforeAction")
+            do {
+                try self.context.save()
+                NotificationCenter.default.post(
+                    name: NSNotification.Name("changeAction"),
+                    object: nil,
+                    userInfo: nil)
+                return true
+            } catch {
+                print(error.localizedDescription)
+                return false
+            }
+
+        } else {
+            return false
+        }
+    }
+    
+    func editAction(_ id: String, rNextAction: String? = "") -> Bool {
+        let request: NSFetchRequest<Action> = Action.fetchRequest()
+        request.predicate = NSPredicate(format: "id = %@", id)
+        let result = fetch(request: request)
+        if let managedObject = result.first {
+            managedObject.setValue(rNextAction, forKey: "rNextAction")
+            do {
+                try self.context.save()
+                NotificationCenter.default.post(
+                    name: NSNotification.Name("changeAction"),
+                    object: nil,
+                    userInfo: nil)
                 return true
             } catch {
                 print(error.localizedDescription)
