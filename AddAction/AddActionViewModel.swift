@@ -8,6 +8,15 @@
 import Foundation
 import CoreData
 
+/*
+루틴 관련 테스트케이스
+ 루틴 생성
+ - 중간 삭제 후  이전-다음 연결되는지 확인
+ - 루틴의 마지막날에 연장되는지 확인
+ - 루틴 줄이기 확인
+ - 루틴 변경 확인
+ */
+
 enum ActionEditorMode {
     case new
     case edit(Action)
@@ -46,9 +55,7 @@ class AddActionViewModel: AddActionViewModelType {
             )
         }
     }
-    
-    
-    
+     
     private var selectedEndDate: Date? {
         didSet {
             if let endDate = selectedEndDate {
@@ -95,7 +102,7 @@ class AddActionViewModel: AddActionViewModelType {
         print("configureTodayContents Done ")
     }
     
-    func registerListeners() {
+    private func registerListeners() {
         
         NotificationCenter.default.addObserver(
             self,
@@ -266,7 +273,7 @@ class AddActionViewModel: AddActionViewModelType {
             }
             date -= 86400  // 하루씩 for문 돔
         }
-        
+        //TODO: 연장할때 앞에 전부다 enddate 바꿔야함
         if extendingOption {
             // 마지막 날 연장인 경우
             let action = ActionItem(id: actionItem.id,
@@ -288,6 +295,7 @@ class AddActionViewModel: AddActionViewModelType {
             CoreDataManager.shared.editAction(action)
             guard let nextId = nextActionId else { return }
             CoreDataManager.shared.editAction(nextId, rBeforeAction: action.id) // 마지막 -1 실천은 before가 없음
+            self.changeRoutineEndDate(id: nextId)
         } else {
             // 일반적인 추가 상황
             // 해당일 저장.
@@ -346,8 +354,8 @@ class AddActionViewModel: AddActionViewModelType {
 
             if let beforeId = action.rBeforeAction {
                 CoreDataManager.shared.editAction(beforeId, rNextAction: nil)
-                self.changeRoutineEndDate(id: beforeId)
                 // 중간부터 제거하는거라면 이전 링크 제거
+                self.changeRoutineEndDate(id: beforeId)
             }
             while actionId != nil {
                 guard let Id = actionId else { return }
@@ -358,11 +366,36 @@ class AddActionViewModel: AddActionViewModelType {
         }
     }
     
-    func changeRoutineEndDate(id: String?) {
+    //
+    private func changeRoutineEndDate(id: String?) {
+        print("changeRoutineEndDate")
         guard let id = id else { return }
-        if let beforeActionDueDate = CoreDataManager.shared.fetchAction(id: id)?.dueDate {
-            var actionId = id
+        let action = CoreDataManager.shared.fetchAction(id: id)
+        
+        var nextId: String?
+        
+        if let action = action { // 제일 마지막으로 이동시킨다.
+            if action.rNextAction != nil {
+                nextId = action.rNextAction
+                while nextId != nil {
+                    let nextAction = CoreDataManager.shared.fetchAction(id: nextId!)
+                    if nextAction?.rNextAction != nil {
+                        nextId = nextAction?.rNextAction
+                    } else {
+                        break
+                    }
+                }
+            } else {
+                nextId = id
+            }
+        }
+        
+        guard let lastId = nextId else { return } // 뒤에서부터 앞으로 오면서 변경해준다.
+        if let beforeActionDueDate = CoreDataManager.shared.fetchAction(id: lastId)?.dueDate {
+            var actionId = lastId
             while actionId != nil {
+                print("changeRoutineEndDate while actionId")
+
                 CoreDataManager.shared.editAction(actionId, endDate: beforeActionDueDate)
                 guard let action = CoreDataManager.shared.fetchAction(id: actionId) else { return }
                 guard let beforeAction = action.rBeforeAction else { return }
@@ -372,7 +405,7 @@ class AddActionViewModel: AddActionViewModelType {
     }
 
     
-    @objc func routinesSelectNotification(_ notification: Notification) {
+    @objc private func routinesSelectNotification(_ notification: Notification) {
         guard let routines = notification.object as? [String] else { return }
         self.selectedRoutines = routines
     }
@@ -383,6 +416,29 @@ class AddActionViewModel: AddActionViewModelType {
 }
 
 protocol AddActionViewModelType {
+    var delegate: AddActionDelegate? { get set }
+    var actionEditorMode: ActionEditorMode { get set }
+    func configureData()
+    func dueDateChanged(_ date: Date)
+    func existNextAction() -> Bool
+    func saveAction(title: String,
+                    emoji: String?,
+                    isDone: Bool?,
+                    isAlarmOn: Bool?,
+                    dueDate: Date?,
+                    dueTime: Date?,
+                    routines: [String]?,
+                    endDate: Date?)
+    func saveRoutineActions(title: String,
+                            emoji: String?,
+                            isDone: Bool?,
+                            isAlarmOn: Bool?,
+                            dueDate: Date?,
+                            dueTime: Date?,
+                            routines: [String]?,
+                            endDate: Date?)
+    func deleteAction()
+    func deleteRoutines()
     
 }
 

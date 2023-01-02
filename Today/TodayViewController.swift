@@ -23,11 +23,11 @@ class TodayViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let request: NSFetchRequest<Action> = Action.fetchRequest()
-        let allActions = CoreDataManager.shared.fetch(request: request)
-        allActions.forEach {
-            CoreDataManager.shared.delete($0)
-        }
+//        let request: NSFetchRequest<Action> = Action.fetchRequest()
+//        let allActions = CoreDataManager.shared.fetch(request: request)
+//        allActions.forEach {
+//            CoreDataManager.shared.delete($0)
+//        }
         self.initViewModel()
         self.configureTodayView()
         self.configureTableView()

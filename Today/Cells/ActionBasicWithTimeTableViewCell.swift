@@ -33,7 +33,7 @@ class ActionBasicWithTimeTableViewCell: UITableViewCell {
             
             UIView.animate(withDuration: 0.5, animations: {
                 self.roundView.alpha = action.isDone ? 0.7 : 1.0
-                self.dimView.alpha = action.isDone ? 0.3 : 0
+                self.dimView.alpha = action.isDone ? 0.1 : 0
                 self.dimView.layoutIfNeeded()
             })
 

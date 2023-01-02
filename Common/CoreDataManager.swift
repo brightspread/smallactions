@@ -224,9 +224,6 @@ class CoreDataManager {
         }
     }
     
-
-    
-
     
     func count<T: NSManagedObject>(request: NSFetchRequest<T>) -> Int? {
         do {

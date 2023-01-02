@@ -22,7 +22,7 @@ class CalendarViewModel: CalendarViewModelType {
         }
     }
     
-    var allActions: [Action] = []{
+    private var allActions: [Action] = []{
         didSet {
             self.delegate?.updateCalendar()
         }
@@ -70,7 +70,7 @@ class CalendarViewModel: CalendarViewModelType {
         )
     }
     
-    @objc func changeActionNotification(_ notification: Notification) {
+    @objc private func changeActionNotification(_ notification: Notification) {
         self.loadAllActions()
         self.loadSelectedDateActions()
     }
@@ -87,7 +87,6 @@ class CalendarViewModel: CalendarViewModelType {
         self.baseDate = self.calendar.date(byAdding: .month,
                                            value: 1,
                                            to: self.selectedDate) ?? self.baseDate
-
     }
     
     func selectDate(_ date: Date) {
@@ -101,7 +100,7 @@ class CalendarViewModel: CalendarViewModelType {
         return CGSize(width: width, height: height)
     }
     
-    func loadSelectedDateActions() {
+    private func loadSelectedDateActions() {
         let request: NSFetchRequest<Action> = Action.fetchRequest()
         request.predicate = NSPredicate(format: "dueDate >= %@ && dueDate <= %@", Calendar.current.startOfDay(for: self.selectedDate) as CVarArg, Calendar.current.startOfDay(for: self.selectedDate + 86400) as CVarArg)
         self.selectedDateActions = CoreDataManager.shared.fetch(request: request).sorted(by: {
@@ -116,7 +115,7 @@ class CalendarViewModel: CalendarViewModelType {
         })
     }
     
-    func loadAllActions() {
+    private func loadAllActions() {
         let request: NSFetchRequest<Action> = Action.fetchRequest()
         self.allActions = CoreDataManager.shared.fetch(request: request)
     }
@@ -218,5 +217,13 @@ private extension CalendarViewModel {
 
 
 protocol CalendarViewModelType {
-    
+    var delegate: CalendarViewDelegate? { get set }
+    var days: [Day] { get }
+    var selectedDateActions: [Action] { get }
+    func getActionProgress(_ date: Date) -> Double
+    func getCalendarSize(width: CGFloat, height: CGFloat) -> CGSize
+    func showNextMonth()
+    func showLastMonth()
+    func configureData()
+    func selectDate(_ date: Date)
 }

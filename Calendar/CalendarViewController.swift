@@ -26,21 +26,21 @@ class CalendarViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.initViewModel()
         self.configureData()
         self.registerTouchHandler()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    private func initViewModel() {
+        self.viewModel.delegate = self
+        self.viewModel.configureData()
     }
     
     private func configureData() {
-        self.viewModel.delegate = self
         self.calendarCollectionView.delegate = self
         self.calendarCollectionView.dataSource = self
         self.actionTableView.delegate = self
         self.actionTableView.dataSource = self
-        self.viewModel.configureData()
         
         if self.viewModel.days.count >= 42 {
             self.calendarViewHeight.constant = 325
