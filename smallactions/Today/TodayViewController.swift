@@ -16,7 +16,7 @@ class TodayViewController: UIViewController {
     @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var actionLabel: UILabel!
     @IBOutlet weak var subActionLabel: UILabel!
-
+    @IBOutlet weak var todayLabel: UILabel!
     @IBOutlet weak var calendarCollectionView: UICollectionView!
     @IBOutlet weak var actionTableView: UITableView!
     
@@ -49,6 +49,7 @@ class TodayViewController: UIViewController {
     
     private func registerHandlers() {
         self.addButtonImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addButtonTapped)))
+        self.todayLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(todayLabelTapped)))
     }
     
     // MARK: 실천 추가 페이지
@@ -59,6 +60,11 @@ class TodayViewController: UIViewController {
         self.present(viewController, animated: true, completion: nil)
     }
     
+    @objc private func todayLabelTapped() {
+        self.calendarViewModel.selectDate(Date.now)
+        self.todayViewModel.selectedDate = Date.now
+    }
+
     private func showEditActionView(_ action: Action?) {
         guard let viewController = AddActionViewController.buildAddActionViewController(self)
         else { return }

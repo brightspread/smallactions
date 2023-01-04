@@ -482,7 +482,7 @@
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="이번 주" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="83F-6H-kKo">
+                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="이번 주" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="83F-6H-kKo">
                                                 <rect key="frame" x="138" y="470" width="51.666666666666657" height="21.666666666666686"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="21.666666666666686" id="Dhk-VK-KQ9"/>
@@ -881,7 +881,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KNq-qI-nqZ">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KNq-qI-nqZ">
                                 <rect key="frame" x="326" y="91" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="BcM-Aa-mxH"/>
@@ -1070,7 +1070,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="이번 주" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MBr-vX-NiS">
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="이번 주" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MBr-vX-NiS">
                                 <rect key="frame" x="151" y="361" width="52" height="22"/>
                                 <fontDescription key="fontDescription" name="AppleSDGothicNeo-Regular" family="Apple SD Gothic Neo" pointSize="18"/>
                                 <color key="textColor" red="0.41960784313725491" green="0.41960784313725491" blue="0.41960784313725491" alpha="1" colorSpace="calibratedRGB"/>
@@ -1269,12 +1269,20 @@
                                 </constraints>
                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
                             </imageView>
+                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오늘" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pDP-kY-xlT">
+                                <rect key="frame" x="161" y="155" width="32" height="22"/>
+                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Regular" family="Apple SD Gothic Neo" pointSize="18"/>
+                                <color key="textColor" red="0.41960784309999999" green="0.41960784309999999" blue="0.41960784309999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="kA1-mY-hv5"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="pDP-kY-xlT" firstAttribute="leading" secondItem="sEg-hd-xuB" secondAttribute="trailing" constant="16" id="0fm-93-zVn"/>
                             <constraint firstItem="MBr-vX-NiS" firstAttribute="bottom" secondItem="8Yb-3h-Ddn" secondAttribute="bottom" id="17n-Am-qE7"/>
                             <constraint firstItem="kA1-mY-hv5" firstAttribute="trailing" secondItem="IKV-CB-3fb" secondAttribute="trailing" constant="20" id="1cT-ca-nKF"/>
+                            <constraint firstItem="pDP-kY-xlT" firstAttribute="centerY" secondItem="sEg-hd-xuB" secondAttribute="centerY" id="1f7-fQ-zcR"/>
                             <constraint firstItem="LgN-5y-ztD" firstAttribute="leading" secondItem="kA1-mY-hv5" secondAttribute="leading" constant="24" id="3D2-K6-tEB"/>
                             <constraint firstItem="8Yb-3h-Ddn" firstAttribute="top" secondItem="FDG-pK-S3D" secondAttribute="bottom" constant="24" id="7AO-rM-UIo"/>
                             <constraint firstItem="kA1-mY-hv5" firstAttribute="bottom" secondItem="a0n-8B-JbC" secondAttribute="bottom" constant="24" id="7St-bH-OCD"/>
@@ -1305,6 +1313,7 @@
                         <outlet property="calendarCollectionView" destination="LgN-5y-ztD" id="6Mq-n7-ygb"/>
                         <outlet property="monthLabel" destination="sEg-hd-xuB" id="8Bg-Hs-iP4"/>
                         <outlet property="subActionLabel" destination="MBr-vX-NiS" id="HRb-SV-aBs"/>
+                        <outlet property="todayLabel" destination="pDP-kY-xlT" id="iQ4-Jg-xL4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iPj-R4-e22" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1397,7 +1406,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1tG-Ks-NSx" customClass="RoundedCornerView" customModule="smallactions" customModuleProvider="target">
-                                <rect key="frame" x="24" y="433.33333333333331" width="342" height="52"/>
+                                <rect key="frame" x="24" y="391.33333333333331" width="342" height="52"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="실천 삭제" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qzP-hZ-Zsj">
                                         <rect key="frame" x="137.33333333333334" y="15.333333333333373" width="67.333333333333343" height="21.666666666666671"/>
@@ -1436,7 +1445,7 @@
                                 </userDefinedRuntimeAttributes>
                             </textField>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="qJJ-id-wWJ">
-                                <rect key="frame" x="0.0" y="247.33333333333337" width="390" height="162"/>
+                                <rect key="frame" x="0.0" y="247.33333333333337" width="390" height="120"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uxy-c3-G4y">
                                         <rect key="frame" x="0.0" y="0.0" width="390" height="36"/>
@@ -1533,7 +1542,7 @@
                                         </constraints>
                                     </view>
                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="20F-kL-LB2">
-                                        <rect key="frame" x="0.0" y="122.99999999999997" width="390" height="36"/>
+                                        <rect key="frame" x="0.0" y="119.99999999999997" width="390" height="36"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="시작 날짜" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="99D-xS-GRb">
                                                 <rect key="frame" x="24" y="7.333333333333373" width="67.333333333333329" height="21.666666666666671"/>
@@ -1574,7 +1583,7 @@
                                         </constraints>
                                     </view>
                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CBi-fe-lGW">
-                                        <rect key="frame" x="0.0" y="122.99999999999997" width="390" height="36"/>
+                                        <rect key="frame" x="0.0" y="119.99999999999997" width="390" height="36"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="종료 날짜" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PUS-WJ-NS7">
                                                 <rect key="frame" x="24" y="7.333333333333373" width="67.333333333333329" height="21.666666666666671"/>
@@ -1615,8 +1624,8 @@
                                             <constraint firstItem="hXk-8M-3iM" firstAttribute="trailing" secondItem="cRO-0c-P9W" secondAttribute="trailing" id="yq5-3k-6Xd"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2RS-3q-oTI">
-                                        <rect key="frame" x="0.0" y="125.99999999999997" width="390" height="36"/>
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2RS-3q-oTI">
+                                        <rect key="frame" x="0.0" y="119.99999999999997" width="390" height="36"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="태그" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bja-eD-DcU">
                                                 <rect key="frame" x="24" y="7.333333333333373" width="31.333333333333329" height="21.666666666666671"/>

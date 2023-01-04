@@ -81,6 +81,7 @@ class AddActionViewModel: AddActionViewModelType {
         switch actionEditorMode {
         case let .edit(action):
             self.configureTodayContents(action)
+            Utils.dateToE(action.dueDate!)
         default:
             // 신규 데이터 생성시
             // 초기 값 설정
@@ -125,7 +126,6 @@ class AddActionViewModel: AddActionViewModelType {
         switch self.actionEditorMode {
         case let .edit(action):
             guard let id = action.id else { return }
-            guard let routines = routines else { return }
             let action = ActionItem(id: id,
                                     emoji: emoji,
                                     title: title,
@@ -133,7 +133,7 @@ class AddActionViewModel: AddActionViewModelType {
                                     dueDate: dueDate,
                                     isDone: isDone,
                                     isAlarmOn: isAlarmOn,
-                                    routines: routines,
+                                    routines: routines ?? nil,
                                     endDate: endDate,
                                     tags: [],
                                     color: nil,
@@ -141,9 +141,13 @@ class AddActionViewModel: AddActionViewModelType {
                                     category: nil,
                                     rNextAction: action.rNextAction, // 원래 값을 들고감.
                                     rBeforeAction: action.rBeforeAction)
-            if !routines.isEmpty {
-                // 루틴 마지막놈으로 연장하고자할때 변경할 때 (1월 30일 -> 2월 28일)
-                self.routineInsertActions(action, extendingOption: true)
+            if let routines = routines {
+                if !routines.isEmpty {
+                    // 루틴 마지막놈으로 연장하고자할때 변경할 때 (1월 30일 -> 2월 28일)
+                    self.routineInsertActions(action, extendingOption: true)
+                } else {
+                    CoreDataManager.shared.editAction(action)
+                }
             } else {
                 CoreDataManager.shared.editAction(action)
             }
@@ -229,13 +233,13 @@ class AddActionViewModel: AddActionViewModelType {
         guard let dueDate = actionItem.dueDate else { return }
         guard let routines = actionItem.routines else { return }
         let endDateComponents = Calendar.current.dateComponents([.year, .month, .day], from: endDate)
-        let newEndDateComponents = DateComponents(year: endDateComponents.year, month: endDateComponents.month, day: endDateComponents.day, hour: 24)
+        let newEndDateComponents = DateComponents(year: endDateComponents.year, month: endDateComponents.month, day: endDateComponents.day, hour: 23, minute: 59)
         guard let newEndDate = Calendar.current.date(from: newEndDateComponents) else { return }
         let dueDateComponents = Calendar.current.dateComponents([.year, .month, .day], from: dueDate)
-        let newDueDateComponents = DateComponents(year: dueDateComponents.year, month: dueDateComponents.month, day: dueDateComponents.day, hour: 00)
+        let newDueDateComponents = DateComponents(year: dueDateComponents.year, month: dueDateComponents.month, day: dueDateComponents.day, hour: 00, minute: 01)
         guard let newDueDate = Calendar.current.date(from: newDueDateComponents) else { return }
 
-        var date = endDate
+        var date = newEndDate
         var count = 1
         var nextActionId: String?
         var beforeActionId: String?
@@ -246,7 +250,7 @@ class AddActionViewModel: AddActionViewModelType {
         while date >= newDueDate + 86400 { // 해당일까지 도달하면 멈춤
             routines.forEach {
                 if Utils.dateToE(date) == $0 { // 월요일, 화요일 등 해당하는 날인지 체크!!
-//                    print("\(count) : \(Utils.dateToE(date)), \(date)")
+                    print("\(count) : \(Utils.dateToE(date)), \(date)")
                     count += 1 // 몇개 추가되었는지 개발용 디버그
                     let action = ActionItem(id: UUID().uuidString,
                                             emoji: actionItem.emoji,
