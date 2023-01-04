@@ -126,6 +126,11 @@ class CoreDataManager {
         return fetch(request: request).first
     }
     
+    func fetchAllAction() -> [Action]? {
+        let request: NSFetchRequest<Action> = Action.fetchRequest()
+        return CoreDataManager.shared.fetch(request: request)
+    }
+    
     // 실천 여부 변경
     func editAction(_ id: String, isDone: Bool) -> Bool {
         let request: NSFetchRequest<Action> = Action.fetchRequest()

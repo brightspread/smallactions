@@ -12,6 +12,13 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Utils.addLaunchCount()
+        let userNotiCenter = UNUserNotificationCenter.current()
+        let notiAuthOptions = UNAuthorizationOptions(arrayLiteral: [.alert, .sound])
+        userNotiCenter.requestAuthorization(options: notiAuthOptions) { (success, error) in
+            if let error = error {
+                print(#function, error)
+            }
+        }
         return true
     }
     

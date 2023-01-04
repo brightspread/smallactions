@@ -90,7 +90,6 @@ class AddActionViewModel: AddActionViewModelType {
     }
     
     private func configureTodayContents(_ action: Action) {
-        print("configureTodayContents : \(action)")
         delegate?.valueChanged(
             [ActionData.title: action.title,
              ActionData.emoji: action.emoji,
@@ -102,7 +101,6 @@ class AddActionViewModel: AddActionViewModelType {
         self.selectedDueDate = action.dueDate ?? self.selectedDueDate
         self.selectedDueTime = action.dueTime ?? self.selectedDueTime
         self.selectedEndDate = action.endDate ?? self.selectedEndDate
-        print("configureTodayContents Done ")
     }
     
     private func registerListeners() {
@@ -248,7 +246,7 @@ class AddActionViewModel: AddActionViewModelType {
         while date >= newDueDate + 86400 { // 해당일까지 도달하면 멈춤
             routines.forEach {
                 if Utils.dateToE(date) == $0 { // 월요일, 화요일 등 해당하는 날인지 체크!!
-                    print("\(count) : \(Utils.dateToE(date)), \(date)")
+//                    print("\(count) : \(Utils.dateToE(date)), \(date)")
                     count += 1 // 몇개 추가되었는지 개발용 디버그
                     let action = ActionItem(id: UUID().uuidString,
                                             emoji: actionItem.emoji,
@@ -371,7 +369,6 @@ class AddActionViewModel: AddActionViewModelType {
     
     //
     private func changeRoutineEndDate(id: String?) {
-        print("changeRoutineEndDate")
         guard let id = id else { return }
         let action = CoreDataManager.shared.fetchAction(id: id)
         
@@ -397,8 +394,6 @@ class AddActionViewModel: AddActionViewModelType {
         if let beforeActionDueDate = CoreDataManager.shared.fetchAction(id: lastId)?.dueDate {
             var actionId = lastId
             while actionId != nil {
-                print("changeRoutineEndDate while actionId")
-
                 CoreDataManager.shared.editAction(actionId, endDate: beforeActionDueDate)
                 guard let action = CoreDataManager.shared.fetchAction(id: actionId) else { return }
                 guard let beforeAction = action.rBeforeAction else { return }

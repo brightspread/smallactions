@@ -20,38 +20,38 @@ class Utils {
     }
     
     static func dateToYmdE(_ date: Date) -> String {
-      let formatter = DateFormatter()
-      formatter.dateFormat = "yyyy년 M월 d일 EEEEE"
-      formatter.locale = Locale(identifier: "ko_KR")
-      return formatter.string(from: date)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 M월 d일 EEEEE"
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter.string(from: date)
     }
     
     static func monthDateDay(_ date: Date) -> String {
-      let formatter = DateFormatter()
-      formatter.dateFormat = "M월 d일 EEEEE"
-      formatter.locale = Locale(identifier: "ko_KR")
-      return formatter.string(from: date)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M월 d일 EEEEE"
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter.string(from: date)
     }
     
     static func dateToE(_ date: Date, _ locale: String = "ko_KR") -> String {
-      let formatter = DateFormatter()
+        let formatter = DateFormatter()
         switch locale {
         case "en_US":
             formatter.dateFormat = "EEE"
         default:
             formatter.dateFormat = "EEEEE요일"
         }
-      formatter.locale = Locale(identifier: locale)
-      return formatter.string(from: date)
+        formatter.locale = Locale(identifier: locale)
+        return formatter.string(from: date)
     }
     
     static func monthDate(_ date: Date) -> String {
-      let formatter = DateFormatter()
-      formatter.dateFormat = "M월 d일"
-      formatter.locale = Locale(identifier: "ko_KR")
-      return formatter.string(from: date)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M월 d일"
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter.string(from: date)
     }
-
+    
     static func ampmTime(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
@@ -94,7 +94,7 @@ class Utils {
         else if str1 == "일요일" { return false }
         if str2 == "토요일" { return true }
         else if str1 == "토요일" { return false }
-
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEEE"
         dateFormatter.locale = Locale(identifier: "ko_KR")
@@ -102,11 +102,11 @@ class Utils {
     }
     
     static func getOneWeekString(_ firstDate: Date, _ lastDate: Date) -> String {
-
+        
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy년 M월 d일 - "
         formatter.locale = Locale(identifier: "ko_KR")
-
+        
         let lastFormatter = DateFormatter()
         lastFormatter.dateFormat = "M월 d일"
         lastFormatter.locale = Locale(identifier: "ko_KR")
@@ -120,7 +120,7 @@ class Utils {
          let createdTime: Date
          let title: String
          let emoji: String
-
+         
          */
         var launchList: [CommonAction]
         let userDefaults = UserDefaults.standard
@@ -135,7 +135,7 @@ class Utils {
         }  else {
             launchList = []
         }
-
+        
         launchList.append(CommonAction(id: UUID().uuidString, createdTime: Date.now, title: "작은 실천 들어오기", emoji: "😁"))
         let launchData = launchList.map {
             [
@@ -172,11 +172,73 @@ class Utils {
         }
         let composeVC = MFMailComposeViewController()
         composeVC.mailComposeDelegate = viewController as? MFMailComposeViewControllerDelegate
-
+        
         composeVC.setToRecipients(["brightspread.jo@gmail.com"])
         composeVC.setSubject("작은 실천 문의사항")
-
+        
         viewController.present(composeVC, animated: true, completion: nil)
     }
+    
+    static func requestNotificationuthorization() {
+        let userNotiCenter = UNUserNotificationCenter.current()
+        let notiAuthOptions = UNAuthorizationOptions(arrayLiteral: [.alert, .badge, .sound])
+        userNotiCenter.requestAuthorization(options: notiAuthOptions) { (success, error) in
+            if let error = error {
+                print(#function, error)
+            }
+        }
+    }
+    
+    // TODO 알림 권한 체크 팝업
+    static func triggerNotification() {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        guard let allActions = CoreDataManager.shared.fetchAllAction() else { return }
+        allActions.forEach {
+            if $0.isAlarmOn && !$0.isDone {
+                if let date = $0.dueDate {
+                    let alarmComponents: DateComponents!
+                    if let time = $0.dueTime { // 설정 시간이 있으면
+                        let dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: date)
+                        let timeComponents = Calendar.current.dateComponents([.hour, .minute], from: time)
+                        alarmComponents = DateComponents(year: dateComponents.year,
+                                                         month: dateComponents.month,
+                                                         day: dateComponents.day,
+                                                         hour: timeComponents.hour,
+                                                         minute: timeComponents.minute)
+                        
+                    } else {
+                        // 설정 시간이 없으면 22시
+                        let dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: date)
+                        alarmComponents = DateComponents(year: dateComponents.year,
+                                                         month: dateComponents.month,
+                                                         day: dateComponents.day,
+                                                         hour: 22,
+                                                         minute: 0)
+                        
+                    }
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: alarmComponents, repeats: false) // alarm 시간 트리거
 
+                    // Notification build
+                    let userNotiCenter = UNUserNotificationCenter.current()
+                    let notiContent = UNMutableNotificationContent()
+                    notiContent.title = "\($0.emoji ?? "") 작은 실천"
+                    notiContent.body = "\($0.title ?? "") 해볼 시간이에요. 화이팅 👍🏻"
+//                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
+                    let request = UNNotificationRequest(
+                        identifier: UUID().uuidString,
+                        content: notiContent,
+                        trigger: trigger
+                    )
+                    userNotiCenter.add(request) { (error) in
+                        if let error = error {
+                            print(#function, error as Any)
+                        }
+                    }
+               }
+            }
+        }
+    }
+    
+    
+    
 }

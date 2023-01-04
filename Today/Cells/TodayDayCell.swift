@@ -35,9 +35,7 @@ class TodayDayCell: UICollectionViewCell {
 private extension TodayDayCell {
     func updateSelectionStatus() {
         guard let day = day else { return }
-        if Utils.getDay(day.date) == "1" {
-            print(day.date)
-        }
+
         if day.isSelected {
             self.background.alpha = 1.0
             self.dayLabel.textColor = .white

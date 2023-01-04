@@ -117,7 +117,6 @@ class AddActionViewController: UIViewController {
     
     // #MARK: Touch Handlers
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touchesBegan")
         self.emojiTextField.resignFirstResponder()
         self.titleTextField.resignFirstResponder()
     }
@@ -250,7 +249,7 @@ extension AddActionViewController: UITextFieldDelegate {
 
 extension AddActionViewController: AddActionDelegate {
     func valueChanged(_ dic: Dictionary<ActionData, Any>) {
-        print("valueChanged : \(dic)")
+//        print("valueChanged : \(dic)")
         for (key, value) in dic {
             switch key {
             case .routines:

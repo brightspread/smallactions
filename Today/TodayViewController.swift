@@ -100,6 +100,7 @@ extension TodayViewController: UITableViewDelegate {
 extension TodayViewController: TodayViewDelegate {
     func actionDidChanged() {
         self.updateCalendar()
+        Utils.triggerNotification()
     }
 }
 
@@ -167,7 +168,6 @@ extension TodayViewController: CalendarViewDelegate {
             switch key {
             case .baseData:
                 guard let value = value as? Date else { return }
-                print("baseData changed")
 //                self.monthLabel.text = Utils.getMonth(value)
 //                self.yearLabel.text = Utils.getYear(value)
 //                self.selectedDateLabel.text = Utils.monthDate(value)
