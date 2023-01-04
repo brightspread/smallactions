@@ -151,4 +151,35 @@ struct AlertService {
         alert.addAction(cancelAction)
         return alert
     }
+    
+    static func deleteAllDataActionAlert(deleteActionHandler: @escaping (UIAlertAction) -> Void) -> UIAlertController {
+        let alert = buildAlertControllerWithApplyTheme(title: nil, message: "전체 데이터를 삭제하시겠습니까? 되돌릴 수 없습니다.", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "취소" , style: UIAlertAction.Style.cancel) { (UIAlertAction) in
+            alert.dismiss(animated: true, completion: nil)
+        }
+        let deleteAction = UIAlertAction(title: "모든 데이터 삭제", style: .destructive, handler: deleteActionHandler)
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        return alert
+    }
+    
+    static func deleteAllDataRetryActionAlert(deleteActionHandler: @escaping (UIAlertAction) -> Void) -> UIAlertController {
+        let alert = buildAlertControllerWithApplyTheme(title: nil, message: "정말로 전체 데이터를 삭제합니까?", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "취소" , style: UIAlertAction.Style.cancel) { (UIAlertAction) in
+            alert.dismiss(animated: true, completion: nil)
+        }
+        let deleteAction = UIAlertAction(title: "모든 데이터 삭제", style: .destructive, handler: deleteActionHandler)
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        return alert
+    }
+    
+    static func noMailAlert() -> UIAlertController {
+        let alert = UIAlertController(title: nil, message: "메일 설정이 되어있지 않습니다.\nbrightspread.jo@gmail.com로 문의사항을 보내주세요.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: { _ in
+            alert.dismiss(animated: true, completion: nil)
+        })
+        alert.addAction(okAction)
+        return alert
+    }
 }

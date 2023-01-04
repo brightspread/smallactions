@@ -17,6 +17,9 @@ import CoreData
  - 루틴 변경 확인
  */
 
+
+//TODO: 알림 기능
+
 enum ActionEditorMode {
     case new
     case edit(Action)
@@ -40,7 +43,7 @@ class AddActionViewModel: AddActionViewModelType {
     
     var actionEditorMode: ActionEditorMode = .new
     
-    private var selectedDueDate = Date.now {
+    var selectedDueDate = Date.now {
         didSet {
             self.delegate?.valueChanged([ActionData.dueDate : selectedDueDate])
             self.selectedEndDate = self.selectedDueDate + 86400 * 7
@@ -418,6 +421,7 @@ class AddActionViewModel: AddActionViewModelType {
 protocol AddActionViewModelType {
     var delegate: AddActionDelegate? { get set }
     var actionEditorMode: ActionEditorMode { get set }
+    var selectedDueDate: Date { get set }
     func configureData()
     func dueDateChanged(_ date: Date)
     func existNextAction() -> Bool

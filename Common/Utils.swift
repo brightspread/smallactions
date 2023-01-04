@@ -5,7 +5,8 @@
 //  Created by Jo on 2022/12/17.
 //
 
-import Foundation
+import UIKit
+import MessageUI
 
 class Utils {
     // MARK: Time
@@ -32,10 +33,15 @@ class Utils {
       return formatter.string(from: date)
     }
     
-    static func dateToE(_ date: Date) -> String {
+    static func dateToE(_ date: Date, _ locale: String = "ko_KR") -> String {
       let formatter = DateFormatter()
-      formatter.dateFormat = "EEEEE요일"
-      formatter.locale = Locale(identifier: "ko_KR")
+        switch locale {
+        case "en_US":
+            formatter.dateFormat = "EEE"
+        default:
+            formatter.dateFormat = "EEEEE요일"
+        }
+      formatter.locale = Locale(identifier: locale)
       return formatter.string(from: date)
     }
     
@@ -157,4 +163,20 @@ class Utils {
         })
         return launchList
     }
+    
+    static func sendEmailToAsk(_ viewController: UIViewController) {
+        if !MFMailComposeViewController.canSendMail() {
+            print("Mail services are not available")
+            AlertService.presentAlert(alert: AlertService.noMailAlert(), vc: viewController)
+            return
+        }
+        let composeVC = MFMailComposeViewController()
+        composeVC.mailComposeDelegate = viewController as? MFMailComposeViewControllerDelegate
+
+        composeVC.setToRecipients(["brightspread.jo@gmail.com"])
+        composeVC.setSubject("작은 실천 문의사항")
+
+        viewController.present(composeVC, animated: true, completion: nil)
+    }
+
 }

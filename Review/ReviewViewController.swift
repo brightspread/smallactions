@@ -37,6 +37,8 @@ class ReviewViewController: UIViewController {
     
     @objc private func reviewDateChanged(sender: UIDatePicker) {
         self.viewModel.selectedDate = sender.date
+        guard let presentedViewController = presentedViewController else { return }
+        presentedViewController.dismiss(animated: false, completion: nil)
     }
 }
 

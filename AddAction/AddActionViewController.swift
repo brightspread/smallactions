@@ -37,7 +37,6 @@ class AddActionViewController: UIViewController {
     private lazy var tagsTapGesutre = UITapGestureRecognizer(target: self, action: #selector(tagsTouched))
     private lazy var deleteTapGesutre = UITapGestureRecognizer(target: self, action: #selector(deleteViewTouched))
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.emojiTextField.delegate = self
@@ -61,8 +60,8 @@ class AddActionViewController: UIViewController {
         case .edit(_):
             self.deleteView.isHidden = false
         default:
-            self.dueDatePicker.date = Date.now
-            self.dateLabel.text = Utils.monthDateDay(Date.now) + " >"
+            self.dueDatePicker.date = self.viewModel.selectedDueDate
+            self.dateLabel.text = Utils.monthDateDay(self.viewModel.selectedDueDate) + " >"
             self.deleteView.isHidden = true
             break
         }

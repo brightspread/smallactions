@@ -10,7 +10,8 @@ import CoreData
 
 class TodayViewController: UIViewController {
     
-    lazy var viewModel = { TodayViewModel() }()
+    lazy var todayViewModel = { TodayViewModel() }()
+    lazy var calendarViewModel = { CalendarViewModel() }()
 
     @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var actionLabel: UILabel!
@@ -23,29 +24,27 @@ class TodayViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let request: NSFetchRequest<Action> = Action.fetchRequest()
-//        let allActions = CoreDataManager.shared.fetch(request: request)
-//        allActions.forEach {
-//            CoreDataManager.shared.delete($0)
-//        }
         self.initViewModel()
         self.configureTodayView()
-        self.configureTableView()
+        self.configureViews()
         self.registerHandlers()
     }
     
     private func initViewModel() {
-        self.viewModel.delegate = self
-        self.viewModel.configureData()
+        self.todayViewModel.delegate = self
+        self.todayViewModel.configureData()
+        self.calendarViewModel.delegate = self
     }
     
     private func configureTodayView() {
-        self.monthLabel.text = Utils.getYearMonth(Date.now)
+        self.monthLabel.text = Utils.getYearMonth(self.todayViewModel.selectedDate)
     }
     
-    private func configureTableView() {
+    private func configureViews() {
         self.actionTableView.dataSource = self
         self.actionTableView.delegate = self
+        self.calendarCollectionView.dataSource = self
+        self.calendarCollectionView.delegate = self
     }
     
     private func registerHandlers() {
@@ -56,6 +55,7 @@ class TodayViewController: UIViewController {
     @objc private func addButtonTapped() {
         guard let viewController = AddActionViewController.buildAddActionViewController(self)
         else { return }
+        viewController.viewModel.selectedDueDate = self.todayViewModel.selectedDate
         self.present(viewController, animated: true, completion: nil)
     }
     
@@ -71,10 +71,10 @@ class TodayViewController: UIViewController {
 
 extension TodayViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.actions.count
+        return self.todayViewModel.actions.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let action = self.viewModel.actions[indexPath.row]
+        let action = self.todayViewModel.actions[indexPath.row]
         if action.dueTime != nil {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ActionBasicWithTimeTableViewCell.reuseIdentifier, for: indexPath) as? ActionBasicWithTimeTableViewCell else { return UITableViewCell() }
             cell.selectionStyle = .none
@@ -92,14 +92,93 @@ extension TodayViewController: UITableViewDataSource {
 extension TodayViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let action = self.viewModel.actions[indexPath.row]
+        let action = self.todayViewModel.actions[indexPath.row]
         self.showEditActionView(action)
     }
 }
 
 extension TodayViewController: TodayViewDelegate {
     func actionDidChanged() {
+        self.updateCalendar()
+    }
+}
+
+extension TodayViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
+        return self.calendarViewModel.days.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let day = self.calendarViewModel.days[indexPath.row]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayDayCell.reuseIdentifier,
+                                                      for: indexPath) as! TodayDayCell
+        cell.day = day
+//        cell.actionProgress = self.viewModel.getActionProgress(day.date)
+        return cell
+    }
+    
+}
+
+extension TodayViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView,
+                        didSelectItemAt indexPath: IndexPath) {
+        let day = self.calendarViewModel.days[indexPath.row]
+        self.todayViewModel.selectedDate = day.date
+        self.calendarViewModel.selectDate(day.date)
+//        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        //        baseDate = baseDate
+        //        collectionView.reloadData()
+        //    dismiss(animated: true, completion: nil)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 36, height: collectionView.frame.height)
+//        return self.calendarViewModel.getCalendarSize(width: collectionView.frame.width,
+//                                              height: collectionView.frame.height)
+    }
+    
+    
+}
+
+
+extension TodayViewController: CalendarViewDelegate {
+    func updateCalendar() {
+        self.calendarCollectionView.reloadData()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            for i in 0..<self.calendarViewModel.days.count {
+                if self.calendarViewModel.days[i].isSelected {
+                    if self.calendarCollectionView.visibleCells.count >= 0 {
+                        self.calendarCollectionView.scrollToItem(at: IndexPath.init(row: i, section: 0), at: .centeredHorizontally, animated: true)
+                    }
+                    break
+                }
+            }
+        }
         self.actionTableView.reloadData()
+        self.configureTodayView()
+    }
+    
+    func valueChanged(_ dic: Dictionary<CalendarData, Any>) {
+        for (key, value) in dic {
+            switch key {
+            case .baseData:
+                guard let value = value as? Date else { return }
+                print("baseData changed")
+//                self.monthLabel.text = Utils.getMonth(value)
+//                self.yearLabel.text = Utils.getYear(value)
+//                self.selectedDateLabel.text = Utils.monthDate(value)
+            case .selectedData:
+                guard let value = value as? Date else { return }
+                self.todayViewModel.selectedDate = value
+//                self.monthLabel.text = Utils.getMonth(value)
+//                self.yearLabel.text = Utils.getYear(value)
+//                self.selectedDateLabel.text = Utils.monthDate(value)
+            }
+        }
     }
 }
 
