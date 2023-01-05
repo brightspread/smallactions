@@ -145,7 +145,12 @@ class CoreDataManager {
                     name: NSNotification.Name("changeAction"),
                     object: nil,
                     userInfo: nil)
-
+                if isDone {
+                    NotificationCenter.default.post(
+                        name: NSNotification.Name("confetti"),
+                        object: nil,
+                        userInfo: nil)
+                }
                 return true
             } catch {
                 print(error.localizedDescription)

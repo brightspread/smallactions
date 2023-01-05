@@ -13,13 +13,14 @@ class TodayViewController: UIViewController {
     lazy var todayViewModel = { TodayViewModel() }()
     lazy var calendarViewModel = { CalendarViewModel() }()
 
+    lazy var confettiView = ConfettiView(frame: self.view.bounds)
+
     @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var actionLabel: UILabel!
     @IBOutlet weak var subActionLabel: UILabel!
     @IBOutlet weak var todayLabel: UILabel!
     @IBOutlet weak var calendarCollectionView: UICollectionView!
     @IBOutlet weak var actionTableView: UITableView!
-    
     @IBOutlet weak var addButtonImageView: UIImageView!
     
     override func viewDidLoad() {
@@ -50,6 +51,21 @@ class TodayViewController: UIViewController {
     private func registerHandlers() {
         self.addButtonImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addButtonTapped)))
         self.todayLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(todayLabelTapped)))
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(confettiNotification(_ :)),
+            name: NSNotification.Name("confetti"),
+            object: nil
+        )
+    }
+    
+    @objc private func confettiNotification(_ notification: Notification) {
+        self.view.addSubview(confettiView)
+        confettiView.startConfetti()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            self?.confettiView.stopConfetti()
+            self?.confettiView.removeFromSuperview()
+        }
     }
     
     // MARK: 실천 추가 페이지

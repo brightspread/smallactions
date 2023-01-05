@@ -13,6 +13,7 @@
 		C848D79C2962ADBD00C56846 /* CommonAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C848D79B2962ADBD00C56846 /* CommonAction.swift */; };
 		C848D79E2963EA2900C56846 /* TodayDayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C848D79D2963EA2900C56846 /* TodayDayCell.swift */; };
 		C848D7A02965588000C56846 /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C848D79F2965588000C56846 /* SettingTableViewCell.swift */; };
+		C85AC40E296692F5008D98C6 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85AC40D296692F5008D98C6 /* ConfettiView.swift */; };
 		C8708A8D2949AF0200A6E142 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8708A8C2949AF0200A6E142 /* AppDelegate.swift */; };
 		C8708A8F2949AF0200A6E142 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8708A8E2949AF0200A6E142 /* SceneDelegate.swift */; };
 		C8708A942949AF0200A6E142 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8708A922949AF0200A6E142 /* Main.storyboard */; };
@@ -54,6 +55,7 @@
 		C848D79B2962ADBD00C56846 /* CommonAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonAction.swift; sourceTree = "<group>"; };
 		C848D79D2963EA2900C56846 /* TodayDayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayDayCell.swift; sourceTree = "<group>"; };
 		C848D79F2965588000C56846 /* SettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
+		C85AC40D296692F5008D98C6 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
 		C8708A892949AF0200A6E142 /* smallactions.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = smallactions.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8708A8C2949AF0200A6E142 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C8708A8E2949AF0200A6E142 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 		C87F47E92951CABD004CEE0D /* CustomView */ = {
 			isa = PBXGroup;
 			children = (
+				C85AC40D296692F5008D98C6 /* ConfettiView.swift */,
 				C8EB2022294DD752005ADAC1 /* RoundedCornerView.swift */,
 				C87F47E3294E0CA6004CEE0D /* RoundImageView.swift */,
 				C82D08FE29544BB10024C941 /* UITextField+MaxLength.swift */,
@@ -267,6 +270,8 @@
 			dependencies = (
 			);
 			name = smallactions;
+			packageProductDependencies = (
+			);
 			productName = smallactions;
 			productReference = C8708A892949AF0200A6E142 /* smallactions.app */;
 			productType = "com.apple.product-type.application";
@@ -346,6 +351,7 @@
 				C894C4FF2949B34D006FC985 /* ReviewViewController.swift in Sources */,
 				C848D79C2962ADBD00C56846 /* CommonAction.swift in Sources */,
 				C8B5D6DD295A9741008298E8 /* AddActionViewModel.swift in Sources */,
+				C85AC40E296692F5008D98C6 /* ConfettiView.swift in Sources */,
 				C82D08FD295448330024C941 /* EmojiTextField.swift in Sources */,
 				C87F47EB2952E017004CEE0D /* Day.swift in Sources */,
 				C894C5092949BEF1006FC985 /* ActionBasicWithTimeTableViewCell.swift in Sources */,
