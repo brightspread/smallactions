@@ -102,7 +102,7 @@ class CalendarViewModel: CalendarViewModelType {
     
     private func loadSelectedDateActions() {
         let request: NSFetchRequest<Action> = Action.fetchRequest()
-        request.predicate = NSPredicate(format: "dueDate >= %@ && dueDate <= %@", Calendar.current.startOfDay(for: self.selectedDate) as CVarArg, Calendar.current.startOfDay(for: self.selectedDate + 86400) as CVarArg)
+        request.predicate = NSPredicate(format: "dueDate >= %@ && dueDate < %@", Calendar.current.startOfDay(for: self.selectedDate) as CVarArg, Calendar.current.startOfDay(for: self.selectedDate + 86400) as CVarArg)
         self.selectedDateActions = CoreDataManager.shared.fetch(request: request).sorted(by: {
             
             if $0.isDone != $1.isDone {
@@ -123,7 +123,7 @@ class CalendarViewModel: CalendarViewModelType {
     func getActionProgress(_ date: Date) -> Double {
         let dateActions = self.allActions.filter {
             guard let dueDate = $0.dueDate else { return false }
-            return dueDate >= date && dueDate <= (date + 86400)
+            return dueDate >= date && dueDate < (date + 86400)
         }
         if dateActions.count > 0 {
             var sum = 0.0

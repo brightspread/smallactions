@@ -35,6 +35,7 @@
 		C8A3A7DC295D77AA00A5C04B /* CalendarActionWithTimeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A3A7DB295D77AA00A5C04B /* CalendarActionWithTimeTableViewCell.swift */; };
 		C8A3A7DE295D77F900A5C04B /* CalendarActionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A3A7DD295D77F900A5C04B /* CalendarActionTableViewCell.swift */; };
 		C8AE00FB2965590100EF008D /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8AE00FA2965590100EF008D /* Setting.swift */; };
+		C8AE00FD296683C400EF008D /* BuildCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8AE00FC296683C400EF008D /* BuildCalendar.swift */; };
 		C8B5D6D92959448D008298E8 /* AlertTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B5D6D82959448C008298E8 /* AlertTableViewController.swift */; };
 		C8B5D6DB295A9048008298E8 /* TodayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B5D6DA295A9048008298E8 /* TodayViewModel.swift */; };
 		C8B5D6DD295A9741008298E8 /* AddActionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B5D6DC295A9741008298E8 /* AddActionViewModel.swift */; };
@@ -77,6 +78,7 @@
 		C8A3A7DB295D77AA00A5C04B /* CalendarActionWithTimeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarActionWithTimeTableViewCell.swift; sourceTree = "<group>"; };
 		C8A3A7DD295D77F900A5C04B /* CalendarActionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarActionTableViewCell.swift; sourceTree = "<group>"; };
 		C8AE00FA2965590100EF008D /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
+		C8AE00FC296683C400EF008D /* BuildCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildCalendar.swift; sourceTree = "<group>"; };
 		C8B5D6D82959448C008298E8 /* AlertTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTableViewController.swift; sourceTree = "<group>"; };
 		C8B5D6DA295A9048008298E8 /* TodayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewModel.swift; sourceTree = "<group>"; };
 		C8B5D6DC295A9741008298E8 /* AddActionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActionViewModel.swift; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 				C8DF6B38296086C5003B9E32 /* Review.swift */,
 				C848D79B2962ADBD00C56846 /* CommonAction.swift */,
 				C8AE00FA2965590100EF008D /* Setting.swift */,
+				C8AE00FC296683C400EF008D /* BuildCalendar.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -204,7 +207,6 @@
 			children = (
 				C8EB2022294DD752005ADAC1 /* RoundedCornerView.swift */,
 				C87F47E3294E0CA6004CEE0D /* RoundImageView.swift */,
-				C82D08FC295448330024C941 /* EmojiTextField.swift */,
 				C82D08FE29544BB10024C941 /* UITextField+MaxLength.swift */,
 			);
 			path = CustomView;
@@ -234,6 +236,7 @@
 		C8DF6B22295FE20C003B9E32 /* AddAction */ = {
 			isa = PBXGroup;
 			children = (
+				C82D08FC295448330024C941 /* EmojiTextField.swift */,
 				C8B5D6DC295A9741008298E8 /* AddActionViewModel.swift */,
 				C87F47E5294E1422004CEE0D /* AddActionViewController.swift */,
 			);
@@ -321,6 +324,7 @@
 			files = (
 				C848D7A02965588000C56846 /* SettingTableViewCell.swift in Sources */,
 				C894C4FD2949B33C006FC985 /* CalendarViewController.swift in Sources */,
+				C8AE00FD296683C400EF008D /* BuildCalendar.swift in Sources */,
 				C8A3A7DC295D77AA00A5C04B /* CalendarActionWithTimeTableViewCell.swift in Sources */,
 				C8DF6B34296080EB003B9E32 /* ReviewViewModel.swift in Sources */,
 				C894C5042949B62C006FC985 /* SmallActions.xcdatamodeld in Sources */,
@@ -499,7 +503,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = M75V4ZN69S;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -534,7 +538,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = M75V4ZN69S;
 				GENERATE_INFOPLIST_FILE = YES;

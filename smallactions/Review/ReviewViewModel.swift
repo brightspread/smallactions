@@ -8,6 +8,11 @@
 import Foundation
 import CoreData
 
+enum ReviewWMState: String {
+    case week = "주간"
+    case month = "월간"
+}
+
 class ReviewViewModel {
     var delegate: ReviewViewDelegate?
     
@@ -17,30 +22,57 @@ class ReviewViewModel {
         }
     }
     
-    var selectedDate: Date? { // 몇 번째 주
+    // week month
+    var wmstate: ReviewWMState = .week {
         didSet {
             guard let selectedDate = self.selectedDate else { return }
-            if Utils.dateToE(selectedDate) != "일요일" {
-                self.weekFirstDate = getStartDayOfWeek(selectedDate)
-            } else {
-                self.weekFirstDate = selectedDate
+            switch self.wmstate {
+            case .month:
+                self.firstDate = getStartDayOfMonth(selectedDate)
+            case .week:
+                if Utils.dateToE(selectedDate) != "일요일" {
+                    self.firstDate = getStartDayOfWeek(selectedDate)
+                } else {
+                    self.firstDate = selectedDate
+                }
             }
         }
     }
     
-    private var weekFirstDate: Date? {
+    var selectedDate: Date? { // 몇 번째 주
         didSet {
-            guard let weekFirstDate = self.weekFirstDate else { return }
-            let calendar = Calendar.current
-            self.weekLastDate = calendar.date(byAdding: .day, value: +6, to: weekFirstDate)
+            guard let selectedDate = self.selectedDate else { return }
+            switch wmstate {
+            case .month:
+                self.firstDate = getStartDayOfMonth(selectedDate)
+            case .week:
+                if Utils.dateToE(selectedDate) != "일요일" {
+                    self.firstDate = getStartDayOfWeek(selectedDate)
+                } else {
+                    self.firstDate = selectedDate
+                }
+            }
+        }
+    }
+    
+    private var firstDate: Date? {
+        didSet {
+            guard let firstDate = self.firstDate else { return }
+            switch wmstate {
+            case .month:
+                self.lastDate = getEndDayOfMonth(firstDate)
+            case .week:
+                let calendar = Calendar.current
+                self.lastDate = calendar.date(byAdding: .day, value: +6, to: firstDate)
+            }
         }
     }
 
-    private var weekLastDate: Date? {
+    private var lastDate: Date? {
         didSet {
-            guard let weekFirstDate = self.weekFirstDate else { return }
-            guard let weekLastDate = self.weekLastDate else { return }
-            self.oneWeekString = Utils.getOneWeekString(weekFirstDate, weekLastDate)
+            guard let firstDate = self.firstDate else { return }
+            guard let lastDate = self.lastDate else { return }
+            self.oneWeekString = Utils.getOneWeekString(firstDate, lastDate)
             self.loadReviews()
         }
     }
@@ -59,12 +91,12 @@ class ReviewViewModel {
     }
     
     private func loadReviews() {
-        guard let weekFirstDate = self.weekFirstDate else { return }
-        guard let weekLastDate = self.weekLastDate else { return }
+        guard let firstDate = self.firstDate else { return }
+        guard let lastDate = self.lastDate else { return }
 
         // 해당 날짜 실천 조회
         let request: NSFetchRequest<Action> = Action.fetchRequest()
-        request.predicate = NSPredicate(format: "dueDate >= %@ && dueDate <= %@", Calendar.current.startOfDay(for: weekFirstDate) as CVarArg, Calendar.current.startOfDay(for: weekLastDate) + 86400 - 1 as CVarArg)
+        request.predicate = NSPredicate(format: "dueDate >= %@ && dueDate < %@", Calendar.current.startOfDay(for: firstDate) as CVarArg, Calendar.current.startOfDay(for: lastDate) + 86400 as CVarArg)
         let actions = CoreDataManager.shared.fetch(request: request).filter {
             $0.isDone
         }
@@ -101,6 +133,14 @@ class ReviewViewModel {
         self.delegate?.reviewDidChange()
     }
     
+    
+    @objc private func changeActionNotification(_ notification: Notification) {
+        self.loadReviews()
+    }
+}
+
+// Calendar
+private extension ReviewViewModel {
     private func getStartDayOfWeek(_ date: Date) -> Date {
         var tempDate = date
         repeat {
@@ -109,13 +149,29 @@ class ReviewViewModel {
         return tempDate
     }
     
+    private func getStartDayOfMonth(_ date: Date) -> Date {
+        let dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: date)
+        let startDayComponents = DateComponents(year: dateComponents.year,
+                                         month: dateComponents.month,
+                                         day: 1)
+        guard let newStartDay = Calendar.current.date(from: startDayComponents) else { return date }
+        return newStartDay
+    }
+    
+    private func getEndDayOfMonth(_ date: Date) -> Date {
+        let calendar = Calendar(identifier: .gregorian)
+        guard let numberOfDaysInMonth = calendar.range(of: .day,in: .month,for: date)?.count else { return date }
+        guard let endDay = calendar.date(byAdding: .day, value: +(numberOfDaysInMonth - 1), to: date) else { return date }
+        return endDay
+    }
+    
     private func addLaunchReview() {
         guard let launchList = Utils.getLaunchCount() else { return }
-        guard let weekFirstDate = self.weekFirstDate else { return }
-        guard let weekLastDate = self.weekLastDate else { return }
+        guard let firstDate = self.firstDate else { return }
+        guard let lastDate = self.lastDate else { return }
 
         let filteredList = launchList.filter {
-            $0.createdTime >= Calendar.current.startOfDay(for: weekFirstDate) && $0.createdTime <= Calendar.current.startOfDay(for: weekLastDate) + 86400 - 1
+            $0.createdTime >= Calendar.current.startOfDay(for: firstDate) && $0.createdTime <= Calendar.current.startOfDay(for: lastDate) + 86400 - 1
         } // 해당 주에 들어온 횟수만 봄
         if !filteredList.isEmpty {
             guard let launchInfo = filteredList.first else { return }
@@ -123,10 +179,7 @@ class ReviewViewModel {
             self.reviews.insert(review, at: 0)
         }
     }
-    
-    @objc private func changeActionNotification(_ notification: Notification) {
-        self.loadReviews()
-    }
+
 }
 
 protocol ReviewViewModelType {

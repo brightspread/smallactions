@@ -35,7 +35,7 @@ class TodayViewModel: TodayViewModelType {
     
     private func loadActions() {
         let request: NSFetchRequest<Action> = Action.fetchRequest()
-        request.predicate = NSPredicate(format: "dueDate >= %@ && dueDate <= %@", Calendar.current.startOfDay(for: self.selectedDate) as CVarArg, Calendar.current.startOfDay(for: self.selectedDate + 86400) as CVarArg)
+        request.predicate = NSPredicate(format: "dueDate >= %@ && dueDate < %@", Calendar.current.startOfDay(for: self.selectedDate) as CVarArg, Calendar.current.startOfDay(for: self.selectedDate + 86400) as CVarArg)
         self.actions = CoreDataManager.shared.fetch(request: request).sorted(by: {
             
             if $0.isDone != $1.isDone {

@@ -39,11 +39,10 @@ class AddActionViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.emojiTextField.delegate = self
         self.initViewModel()
         self.configureInputField()
+        self.configureContents()
         self.registerTouchHandler()
-        self.configureTodayContents()
     }
     
     private func initViewModel() {
@@ -55,7 +54,9 @@ class AddActionViewController: UIViewController {
         super.viewWillDisappear(animated)
     }
     
-    private func configureTodayContents() {
+    private func configureContents() {
+        self.emojiTextField.delegate = self
+
         switch self.viewModel.actionEditorMode {
         case .edit(_):
             self.deleteView.isHidden = false
@@ -234,16 +235,19 @@ class AddActionViewController: UIViewController {
     }
 }
 
-
-extension AddActionViewController: UITextViewDelegate {
-    func textViewDidChange(_ textView: UITextView) {
-        self.validateInputField()
-    }
-}
-
 extension AddActionViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.text = ""
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == self.emojiTextField && string.count > 0 {
+            DispatchQueue.main.async {
+                textField.resignFirstResponder()
+                self.titleTextField.becomeFirstResponder()
+            }
+        }
+        return true
     }
 }
 

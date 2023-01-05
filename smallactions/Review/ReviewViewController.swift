@@ -16,6 +16,9 @@ class ReviewViewController: UIViewController {
     @IBOutlet weak var reviewDatePicker: UIDatePicker!
     @IBOutlet weak var complimentsLabel: UILabel!
     
+    @IBOutlet weak var reviewMainLabel: UILabel!
+    @IBOutlet weak var reviewSubLabel: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initViewModel()
@@ -33,6 +36,20 @@ class ReviewViewController: UIViewController {
     }
     private func registerHandlers() {
         self.reviewDatePicker.addTarget(self, action: #selector(reviewDateChanged(sender:)), for: .valueChanged)
+        self.reviewSubLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(reviewSubLabelTapped(sender:))))
+    }
+    
+    @objc private func reviewSubLabelTapped(sender: UIGestureRecognizer) {
+        guard let wmstate = ReviewWMState(rawValue:(sender.view as? UILabel)?.text ?? "") else { return }
+        self.viewModel.wmstate = wmstate
+        switch wmstate {
+        case .month:
+            self.reviewMainLabel.text = "월간 실천 진행"
+            self.reviewSubLabel.text = "주간"
+        case .week:
+            self.reviewMainLabel.text = "주간 실천 진행"
+            self.reviewSubLabel.text = "월간"
+        }
     }
     
     @objc private func reviewDateChanged(sender: UIDatePicker) {

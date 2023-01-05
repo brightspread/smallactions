@@ -287,7 +287,7 @@ class AddActionViewModel: AddActionViewModelType {
                                     dueTime: actionItem.dueTime,
                                     dueDate: date,
                                     isDone: actionItem.isDone,
-                                    isAlarmOn: false,
+                                    isAlarmOn: actionItem.isAlarmOn,
                                     routines: actionItem.routines,
                                     endDate: actionItem.endDate,
                                     tags: actionItem.tags,
