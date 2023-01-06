@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		21A2CE5D2F540929E4B7664B /* Pods_smallactions.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 952813B3898896D67355C5C6 /* Pods_smallactions.framework */; };
 		C82D08F3295443D90024C941 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82D08F2295443D90024C941 /* CoreDataManager.swift */; };
 		C82D08FD295448330024C941 /* EmojiTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82D08FC295448330024C941 /* EmojiTextField.swift */; };
 		C82D08FF29544BB10024C941 /* UITextField+MaxLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82D08FE29544BB10024C941 /* UITextField+MaxLength.swift */; };
@@ -46,9 +47,13 @@
 		C8DF6B39296086C5003B9E32 /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DF6B38296086C5003B9E32 /* Review.swift */; };
 		C8EB2023294DD752005ADAC1 /* RoundedCornerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8EB2022294DD752005ADAC1 /* RoundedCornerView.swift */; };
 		C8EB2025294DDA4C005ADAC1 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8EB2024294DDA4C005ADAC1 /* Utils.swift */; };
+		C8F992012967C7B800ECAAC3 /* Character+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F992002967C7B800ECAAC3 /* Character+Emoji.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0E651937A31794EBA7171AB8 /* Pods-smallactions.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-smallactions.debug.xcconfig"; path = "Target Support Files/Pods-smallactions/Pods-smallactions.debug.xcconfig"; sourceTree = "<group>"; };
+		719F77EB36DD9EDC08216814 /* Pods-smallactions.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-smallactions.release.xcconfig"; path = "Target Support Files/Pods-smallactions/Pods-smallactions.release.xcconfig"; sourceTree = "<group>"; };
+		952813B3898896D67355C5C6 /* Pods_smallactions.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_smallactions.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C82D08F2295443D90024C941 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		C82D08FC295448330024C941 /* EmojiTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiTextField.swift; sourceTree = "<group>"; };
 		C82D08FE29544BB10024C941 /* UITextField+MaxLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+MaxLength.swift"; sourceTree = "<group>"; };
@@ -90,6 +95,7 @@
 		C8DF6B38296086C5003B9E32 /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
 		C8EB2022294DD752005ADAC1 /* RoundedCornerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCornerView.swift; sourceTree = "<group>"; };
 		C8EB2024294DDA4C005ADAC1 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		C8F992002967C7B800ECAAC3 /* Character+Emoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+Emoji.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,17 +103,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21A2CE5D2F540929E4B7664B /* Pods_smallactions.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5FFC840B06AA82BB625AEBBD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				952813B3898896D67355C5C6 /* Pods_smallactions.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6BAA766D483AE1D0D95CE26F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0E651937A31794EBA7171AB8 /* Pods-smallactions.debug.xcconfig */,
+				719F77EB36DD9EDC08216814 /* Pods-smallactions.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		C8708A802949AF0200A6E142 = {
 			isa = PBXGroup;
 			children = (
 				C8708A8B2949AF0200A6E142 /* smallactions */,
 				C8708A8A2949AF0200A6E142 /* Products */,
+				6BAA766D483AE1D0D95CE26F /* Pods */,
+				5FFC840B06AA82BB625AEBBD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -232,6 +258,7 @@
 				C82D08F2295443D90024C941 /* CoreDataManager.swift */,
 				C8B94C072957096B004E94A0 /* AlertService.swift */,
 				C8B5D6D82959448C008298E8 /* AlertTableViewController.swift */,
+				C8F992002967C7B800ECAAC3 /* Character+Emoji.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -261,17 +288,17 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C8708A9D2949AF0500A6E142 /* Build configuration list for PBXNativeTarget "smallactions" */;
 			buildPhases = (
+				C847B5C9332573253D32707D /* [CP] Check Pods Manifest.lock */,
 				C8708A852949AF0200A6E142 /* Sources */,
 				C8708A862949AF0200A6E142 /* Frameworks */,
 				C8708A872949AF0200A6E142 /* Resources */,
+				1332E4D5AA165B941FBFFEF6 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = smallactions;
-			packageProductDependencies = (
-			);
 			productName = smallactions;
 			productReference = C8708A892949AF0200A6E142 /* smallactions.app */;
 			productType = "com.apple.product-type.application";
@@ -322,6 +349,48 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		1332E4D5AA165B941FBFFEF6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-smallactions/Pods-smallactions-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-smallactions/Pods-smallactions-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-smallactions/Pods-smallactions-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C847B5C9332573253D32707D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-smallactions-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		C8708A852949AF0200A6E142 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -363,6 +432,7 @@
 				C87F47E4294E0CA6004CEE0D /* RoundImageView.swift in Sources */,
 				C8AE00FB2965590100EF008D /* Setting.swift in Sources */,
 				C8A3A7DE295D77F900A5C04B /* CalendarActionTableViewCell.swift in Sources */,
+				C8F992012967C7B800ECAAC3 /* Character+Emoji.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -504,12 +574,13 @@
 		};
 		C8708A9E2949AF0500A6E142 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0E651937A31794EBA7171AB8 /* Pods-smallactions.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = M75V4ZN69S;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -539,12 +610,13 @@
 		};
 		C8708A9F2949AF0500A6E142 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 719F77EB36DD9EDC08216814 /* Pods-smallactions.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = M75V4ZN69S;
 				GENERATE_INFOPLIST_FILE = YES;

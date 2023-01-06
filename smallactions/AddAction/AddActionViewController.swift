@@ -6,15 +6,14 @@
 //
 
 import UIKit
-
-
+import SearchTextField
 
 class AddActionViewController: UIViewController {
     
     lazy var viewModel = { AddActionViewModel() }()
 
     @IBOutlet weak var saveButton: UIButton!
-    @IBOutlet weak var titleTextField: UITextField!
+    @IBOutlet weak var titleTextField: SearchTextField!
     @IBOutlet weak var emojiTextField: EmojiTextField!
     @IBOutlet weak var doneButton: UIButton!
     @IBOutlet weak var alarmSwitch: UISwitch!
@@ -40,7 +39,7 @@ class AddActionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initViewModel()
-        self.configureInputField()
+        self.configureTextField()
         self.configureContents()
         self.registerTouchHandler()
     }
@@ -69,8 +68,19 @@ class AddActionViewController: UIViewController {
         self.validateInputField()
     }
     
-    private func configureInputField() {
+    private func configureTextField() {
         self.titleTextField.addTarget(self, action: #selector(titleTextFieldDidChnage(_:)), for: .editingChanged)
+        self.titleTextField.filterStrings(self.viewModel.getDBTitleArray())
+        self.titleTextField.theme.cellHeight = 44
+
+        self.titleTextField.theme.font = UIFont(name: "AppleSDGothicNeo-Light", size: 18)!
+        self.titleTextField.itemSelectionHandler = {item, itemPosition in
+            let title = item[itemPosition].title
+            if let first = title.first {
+                self.emojiTextField.text = first.isEmoji ? String(first) : ""
+                self.titleTextField.text = first.isEmoji ? String(title.dropFirst().dropFirst()) : String(title.dropFirst())
+            }
+        }
     }
 
     private func registerTouchHandler() {

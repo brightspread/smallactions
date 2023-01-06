@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import SearchTextField
 
 /*
 루틴 관련 테스트케이스
@@ -414,6 +415,18 @@ class AddActionViewModel: AddActionViewModelType {
     
     func dueDateChanged(_ date: Date) {
         self.selectedDueDate = date
+    }
+    
+    func getDBTitleArray() -> [String] {
+        guard let allActions = CoreDataManager.shared.fetchAllAction() else { return [] }
+        let actionStrings = allActions.map {
+            return ($0.emoji ?? "") + " " + ($0.title ?? "")
+        }.sorted(by: {
+            return $0 < $1
+        })
+        let actionSet = Set(actionStrings) // 중복 제거
+        let arr = Array(actionSet)
+        return arr
     }
 }
 
