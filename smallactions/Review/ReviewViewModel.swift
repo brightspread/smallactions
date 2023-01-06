@@ -108,8 +108,8 @@ class ReviewViewModel {
             var lastDate = action.dueDate
             for i in 0..<self.reviews.count {
                 let tReview = self.reviews[i]
-                if action.title == tReview.actionTitle &&
-                    action.emoji == tReview.actionEmoji {
+                if action.title == tReview.actionTitle
+                    /*&& action.emoji == tReview.actionEmoji*/ { // 이름으로만 구분
                     count = tReview.count + 1 // 카운트를 1 늘려가면서..
                     lastDate = tReview.lastDate
                     if lastDate == nil {
