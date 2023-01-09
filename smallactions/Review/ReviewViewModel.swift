@@ -176,7 +176,7 @@ private extension ReviewViewModel {
         if !filteredList.isEmpty {
             guard let launchInfo = filteredList.first else { return }
             let review = Review(actionTitle: launchInfo.title, actionEmoji: launchInfo.emoji, count: filteredList.count, lastDate: launchInfo.createdTime)
-            self.reviews.insert(review, at: 0)
+            self.reviews.insert(review, at: self.reviews.count)
         }
     }
 
