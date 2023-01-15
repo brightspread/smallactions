@@ -24,8 +24,6 @@ class ActionBasicWithTimeTableViewCell: UITableViewCell {
 
             self.emojiLabel.text = action.emoji
             self.titleLabel.text = action.title
-            guard let time = action.dueTime else { return }
-            self.timeLabel.text = Utils.ampmTime(time)
             self.doneButton.setImage(action.isDone ? UIImage(systemName: "checkmark.circle.fill") : UIImage(systemName: "circle"), for: .normal)
 
             //Animation 자연스럽게
@@ -37,6 +35,8 @@ class ActionBasicWithTimeTableViewCell: UITableViewCell {
                 self.dimView.layoutIfNeeded()
             })
 
+            guard let time = action.dueTime else { return }
+            self.timeLabel.text = Utils.ampmTime(time)
         }
     }
     

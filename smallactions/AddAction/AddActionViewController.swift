@@ -7,10 +7,13 @@
 
 import UIKit
 import SearchTextField
+import RxSwift
+import RxCocoa
 
 class AddActionViewController: UIViewController {
     
-    lazy var viewModel = { AddActionViewModel() }()
+    var disposeBag = DisposeBag()
+    var viewModel = AddActionViewModel()
 
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var titleTextField: SearchTextField!
@@ -38,15 +41,15 @@ class AddActionViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.initViewModel()
-        self.configureTextField()
-        self.configureContents()
-        self.registerTouchHandler()
+        initViewModel()
+        configureTextField()
+        configureContents()
+        registerTouchHandler()
     }
     
     private func initViewModel() {
-        self.viewModel.delegate = self
-        self.viewModel.configureData()
+        viewModel.delegate = self
+        viewModel.configureData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -54,14 +57,74 @@ class AddActionViewController: UIViewController {
     }
     
     private func configureContents() {
-        self.emojiTextField.delegate = self
+        // viewmodel binding
+        viewModel.rxSelectedDueTime
+            .subscribe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
+                self?.timeDatePicker.date = $0
+                self?.dueTimeLabel.text = Utils.ampmTime($0) + " >"
+            }).disposed(by: disposeBag)
+        
+        viewModel.rxSelectedDueDate
+            .subscribe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
+                self?.dueDatePicker.date = $0
+                self?.dateLabel.text = Utils.monthDateDay($0) + " >"
+            }).disposed(by: disposeBag)
+        
+        viewModel.rxSelectedEndDate
+            .subscribe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
+                self?.endDateLabel.text = Utils.monthDateDay($0) + " >"
+                self?.endDatePicker.date = $0
+            }).disposed(by: disposeBag)
 
+        _ = viewModel.rxSelectedRoutines
+            .asDriver(onErrorJustReturn: [])
+            .map {
+                $0.isEmpty ? "없음 >" : $0.map {
+                    return String($0.first!)
+                }.joined(separator: ", ") + " >"
+            }
+            .drive(routinesLabel.rx.text)
+            .disposed(by: disposeBag)
+            
+            _ = viewModel.rxSelectedRoutines
+            .subscribe(onNext: { [weak self] in
+                self?.selectedRoutines = $0
+                self?.endDateView.isHidden = $0.isEmpty
+            })
+            .disposed(by: disposeBag)
+        
+        
+        // Picker binding
+        timeDatePicker.rx.value
+            .asDriver(onErrorJustReturn: .now)
+            .map{ Utils.ampmTime($0) }
+            .drive(dueTimeLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        dueDatePicker.rx.value
+            .bind(to: viewModel.rxSelectedDueDate)
+            .disposed(by: disposeBag)
+        
+        dueDatePicker.rx.value
+            .asDriver(onErrorJustReturn: .now)
+            .map { Utils.monthDateDay($0) + " >" }
+            .drive(dateLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        endDatePicker.rx.value
+            .asDriver(onErrorJustReturn: .now)
+            .map{ Utils.monthDateDay($0) + " >" }
+            .drive(endDateLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        self.emojiTextField.delegate = self
         switch self.viewModel.actionEditorMode {
         case .edit(_):
             self.deleteView.isHidden = false
         default:
-            self.dueDatePicker.date = self.viewModel.selectedDueDate
-            self.dateLabel.text = Utils.monthDateDay(self.viewModel.selectedDueDate) + " >"
             self.deleteView.isHidden = true
             break
         }
@@ -84,11 +147,6 @@ class AddActionViewController: UIViewController {
     }
 
     private func registerTouchHandler() {
-        self.alarmSwitch.addTarget(self, action: #selector(alarmSwitchChanged(sender:)), for: .valueChanged)
-        self.timeDatePicker.addTarget(self, action: #selector(dueTimeChanged(sender:)), for: .valueChanged)
-        self.dueDatePicker.addTarget(self, action: #selector(dueDateChanged(sender:)), for: .valueChanged)
-        self.endDatePicker.addTarget(self, action: #selector(endDateChanged(sender:)), for: .valueChanged)
-
         self.routinesLabel.addGestureRecognizer(routinesTapGesutre)
         self.tagsLabel.addGestureRecognizer(tagsTapGesutre)
         self.deleteView.addGestureRecognizer(deleteTapGesutre)
@@ -99,23 +157,6 @@ class AddActionViewController: UIViewController {
         self.routinesLabel.removeGestureRecognizer(routinesTapGesutre)
         self.tagsLabel.removeGestureRecognizer(tagsTapGesutre)
         self.deleteView.removeGestureRecognizer(deleteTapGesutre)
-    }
-
-    @objc private func alarmSwitchChanged(sender: UISwitch) {
-//        self.endDateView.isHidden = !sender.isOn
-    }
-    
-    @objc private func dueTimeChanged(sender: UIDatePicker) {
-        self.dueTimeLabel.text = Utils.ampmTime(sender.date)
-    }
-    
-    @objc private func dueDateChanged(sender: UIDatePicker) {
-        self.dateLabel.text = Utils.monthDateDay(sender.date) + " >"
-        self.viewModel.dueDateChanged(sender.date)
-    }
-
-    @objc private func endDateChanged(sender: UIDatePicker) {
-        self.endDateLabel.text = Utils.monthDateDay(sender.date) + " >"
     }
 
     @objc private func titleTextFieldDidChnage(_ textField: UITextField) {
@@ -263,28 +304,8 @@ extension AddActionViewController: UITextFieldDelegate {
 
 extension AddActionViewController: AddActionDelegate {
     func valueChanged(_ dic: Dictionary<ActionData, Any>) {
-//        print("valueChanged : \(dic)")
         for (key, value) in dic {
             switch key {
-            case .routines:
-                guard let value = value as? [String] else { continue }
-                self.selectedRoutines = value
-                self.routinesLabel.text = value.isEmpty ? "없음 >" : value.map {
-                    return String($0.first!)
-                }.joined(separator: ", ") + " >"
-                self.endDateView.isHidden = value.isEmpty
-            case .duetime:
-                guard let value = value as? Date else { continue }
-                self.timeDatePicker.date = value
-                self.dueTimeLabel.text = Utils.ampmTime(value) + " >"
-            case .dueDate:
-                guard let value = value as? Date else { continue }
-                self.dueDatePicker.date = value
-                self.dateLabel.text = Utils.monthDateDay(value) + " >"
-            case .endDate:
-                guard let value = value as? Date else { continue }
-                self.endDateLabel.text = Utils.monthDateDay(value) + " >"
-                self.endDatePicker.date = value
             case .title:
                 guard let value = value as? String else { continue }
                 self.titleTextField.text = value

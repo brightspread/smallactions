@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import UIKit
+import RxSwift
 
 class CoreDataManager {
     
@@ -34,6 +35,20 @@ class CoreDataManager {
         } catch {
             print(error.localizedDescription)
             return []
+        }
+    }
+    struct CDError: Error {
+        let msg: String
+    }
+    func rxFetch<T: NSManagedObject>(request: NSFetchRequest<T>) -> Observable<[T]> {
+        return Observable.create { [weak self] emitter in
+            guard let result = self?.fetch(request: request) else {
+                emitter.onError(CDError(msg: "rxFetch Error"))
+                return Disposables.create()
+            }
+            emitter.onNext(result)
+            emitter.onCompleted()
+            return Disposables.create()
         }
     }
     

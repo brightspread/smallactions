@@ -48,6 +48,7 @@ class CalendarViewController: UIViewController {
             self.calendarViewHeight.constant = 275
         }
         self.calendarCollectionView.layoutIfNeeded()
+        self.monthLabel.text = Utils.getMonth(Date.now)
         self.selectedDateLabel.text = Utils.monthDate(Date.now)
     }
     
@@ -166,12 +167,10 @@ extension CalendarViewController: UITableViewDataSource {
         let action = self.viewModel.selectedDateActions[indexPath.row]
         if action.dueTime != nil {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CalendarActionWithTimeTableViewCell.reuseIdentifier, for: indexPath) as? CalendarActionWithTimeTableViewCell else { return UITableViewCell() }
-            cell.selectionStyle = .none
             cell.action = action
             return cell
         } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CalendarActionTableViewCell.reuseIdentifier, for: indexPath) as? CalendarActionTableViewCell else { return UITableViewCell() }
-            cell.selectionStyle = .none
             cell.action = action
             return cell
         }

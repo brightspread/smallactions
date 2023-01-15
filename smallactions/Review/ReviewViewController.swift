@@ -6,9 +6,12 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
 
 class ReviewViewController: UIViewController {
 
+    var disposeBag = DisposeBag()
     lazy var viewModel = { ReviewViewModel() }()
     
     @IBOutlet weak var reviewTableView: UITableView!
@@ -27,12 +30,21 @@ class ReviewViewController: UIViewController {
     }
     
     private func initViewModel() {
-        self.viewModel.delegate = self
-        self.viewModel.configureData()
+        viewModel.rxConfigureData()
     }
     
     private func configureView() {
-        self.reviewDateLabel.text = self.viewModel.oneWeekString
+        viewModel.rxOneWeekString
+            .asDriver(onErrorJustReturn: "")
+            .drive(reviewDateLabel.rx.text)
+            .disposed(by: disposeBag)
+        viewModel.rxReviews
+            .asDriver(onErrorJustReturn: [])
+            .drive(reviewTableView.rx.items(cellIdentifier: ReviewTableViewCell.reuseIdentifier, cellType: ReviewTableViewCell.self)) { _, item, cell in
+                cell.review = item
+            }.disposed(by: disposeBag)
+        
+//        self.reviewDateLabel.text = self.viewModel.oneWeekString
     }
     private func registerHandlers() {
         self.reviewDatePicker.addTarget(self, action: #selector(reviewDateChanged(sender:)), for: .valueChanged)
@@ -41,7 +53,9 @@ class ReviewViewController: UIViewController {
     
     @objc private func reviewSubLabelTapped(sender: UIGestureRecognizer) {
         guard let wmstate = ReviewWMState(rawValue:(sender.view as? UILabel)?.text ?? "") else { return }
-        self.viewModel.wmstate = wmstate
+        _ = Observable.just(wmstate)
+            .bind(to: viewModel.rxWMstate)
+            .disposed(by: disposeBag)
         switch wmstate {
         case .month:
             self.reviewMainLabel.text = "월간 실천 진행"
@@ -53,38 +67,10 @@ class ReviewViewController: UIViewController {
     }
     
     @objc private func reviewDateChanged(sender: UIDatePicker) {
-        self.viewModel.selectedDate = sender.date
+        _ = Observable.just(sender.date)
+            .bind(to: viewModel.rxSelectedDate)
+            .disposed(by: disposeBag)
         guard let presentedViewController = presentedViewController else { return }
         presentedViewController.dismiss(animated: false, completion: nil)
     }
-}
-
-extension ReviewViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.reviews.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ReviewTableViewCell.reuseIdentifier) as? ReviewTableViewCell else { return UITableViewCell() }
-        cell.review = self.viewModel.reviews[indexPath.row]
-        cell.selectionStyle = .none
-        return cell
-    }
-}
-
-extension ReviewViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-}
-
-extension ReviewViewController: ReviewViewDelegate {
-    func reviewDidChange() {
-        self.reviewDateLabel.text = self.viewModel.oneWeekString
-        self.reviewTableView.reloadData()
-    }
-}
-
-protocol ReviewViewDelegate {
-    func reviewDidChange()
 }

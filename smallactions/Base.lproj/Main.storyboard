@@ -301,7 +301,7 @@
                                                     <constraint firstAttribute="height" constant="400" id="m8q-V9-v5z"/>
                                                 </constraints>
                                                 <prototypes>
-                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CalendarActionTableViewCell" rowHeight="88" id="nu0-Sd-vHC" customClass="CalendarActionTableViewCell" customModule="smallactions" customModuleProvider="target">
+                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="CalendarActionTableViewCell" rowHeight="88" id="nu0-Sd-vHC" customClass="CalendarActionTableViewCell" customModule="smallactions" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="50" width="350" height="88"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nu0-Sd-vHC" id="lR1-Wg-wJj" userLabel="I">
@@ -372,7 +372,7 @@
                                                             <outlet property="titleLabel" destination="XX2-jr-2bG" id="c8e-hA-uCP"/>
                                                         </connections>
                                                     </tableViewCell>
-                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CalendarActionWithTimeTableViewCell" rowHeight="88" id="bLn-OM-h4q" customClass="CalendarActionWithTimeTableViewCell" customModule="smallactions" customModuleProvider="target">
+                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="CalendarActionWithTimeTableViewCell" rowHeight="88" id="bLn-OM-h4q" customClass="CalendarActionWithTimeTableViewCell" customModule="smallactions" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="138" width="350" height="88"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bLn-OM-h4q" id="zhR-h1-uJT">
@@ -721,7 +721,7 @@
                                 <rect key="frame" x="20" y="309" width="350" height="452"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ReviewTableViewCell" rowHeight="110" id="EMG-wt-xPk" customClass="ReviewTableViewCell" customModule="smallactions" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="ReviewTableViewCell" rowHeight="110" id="EMG-wt-xPk" customClass="ReviewTableViewCell" customModule="smallactions" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="350" height="110"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EMG-wt-xPk" id="29B-Qk-mK1" userLabel="I">
@@ -809,10 +809,6 @@
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="GcU-cp-dD4" id="BWQ-eF-Ux6"/>
-                                    <outlet property="delegate" destination="GcU-cp-dD4" id="WE6-U0-vGf"/>
-                                </connections>
                             </tableView>
                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="월간" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aAJ-ZV-oKl">
                                 <rect key="frame" x="178" y="161" width="32" height="22"/>
@@ -1035,7 +1031,7 @@
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="PRs-Jv-wXu">
                                         <rect key="frame" x="364" y="0.0" width="36" height="74"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="imy-Xu-E11">
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" id="imy-Xu-E11">
                                             <rect key="frame" x="0.0" y="0.0" width="36" height="74"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </collectionViewCellContentView>
@@ -1043,7 +1039,7 @@
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="7N5-Cn-gSm">
                                         <rect key="frame" x="416" y="0.0" width="36" height="74"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="0dW-yI-BL6">
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" id="0dW-yI-BL6">
                                             <rect key="frame" x="0.0" y="0.0" width="36" height="74"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </collectionViewCellContentView>
@@ -1051,7 +1047,7 @@
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="RmA-vP-Nu3">
                                         <rect key="frame" x="468" y="0.0" width="36" height="74"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ket-Ac-xAe">
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" id="ket-Ac-xAe">
                                             <rect key="frame" x="0.0" y="0.0" width="36" height="74"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </collectionViewCellContentView>
@@ -1092,7 +1088,7 @@
                                 <rect key="frame" x="20" y="407" width="350" height="330"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActionBasicTableViewCell" rowHeight="92" id="mXo-z9-gZA" customClass="ActionBasicTableViewCell" customModule="smallactions" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="ActionBasicTableViewCell" rowHeight="92" id="mXo-z9-gZA" customClass="ActionBasicTableViewCell" customModule="smallactions" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="350" height="92"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="mXo-z9-gZA" id="N1o-gX-drk" userLabel="I">
@@ -1177,7 +1173,7 @@
                                             <outlet property="titleLabel" destination="ZOU-xK-xSc" id="z0d-jW-Fq1"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActionBasicWithTimeTableViewCell" rowHeight="92" id="IAR-mM-NJT" customClass="ActionBasicWithTimeTableViewCell" customModule="smallactions" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="ActionBasicWithTimeTableViewCell" rowHeight="92" id="IAR-mM-NJT" customClass="ActionBasicWithTimeTableViewCell" customModule="smallactions" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="142" width="350" height="92"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="IAR-mM-NJT" id="bZA-1a-7Oh">

@@ -8,6 +8,8 @@
 import Foundation
 import CoreData
 import SearchTextField
+import RxSwift
+import RxRelay
 
 /*
 루틴 관련 테스트케이스
@@ -17,9 +19,6 @@ import SearchTextField
  - 루틴 줄이기 확인
  - 루틴 변경 확인
  */
-
-
-//TODO: 알림 기능
 
 enum ActionEditorMode {
     case new
@@ -39,54 +38,26 @@ enum ActionData: String {
 
 class AddActionViewModel: AddActionViewModelType {
     
+    var disposeBag = DisposeBag()
     var delegate: AddActionDelegate?
     var action: Action?
     
     var actionEditorMode: ActionEditorMode = .new
-    
-    var selectedDueDate = Date.now {
-        didSet {
-            self.delegate?.valueChanged([ActionData.dueDate : selectedDueDate])
-            self.selectedEndDate = self.selectedDueDate + 86400 * 7
-        }
-    }
-    
-    private var selectedDueTime: Date? {
-        didSet {
-            guard let dueTime = selectedDueTime else { return }
-            delegate?.valueChanged(
-                [ActionData.duetime: dueTime]
-            )
-        }
-    }
-     
-    private var selectedEndDate: Date? {
-        didSet {
-            if let endDate = selectedEndDate {
-                delegate?.valueChanged(
-                    [ActionData.endDate: endDate]
-                )
-            }
-        }
-    }
-    
-    private var selectedRoutines: [String]? {
-        didSet {
-            guard let routines = selectedRoutines else { return }
-            delegate?.valueChanged([ActionData.routines: routines])
-        }
-    }
-    
+    var rxSelectedDueDate = BehaviorRelay<Date>(value: .now)
+    var rxSelectedDueTime = BehaviorRelay<Date>(value: .now)
+    var rxSelectedEndDate = BehaviorRelay<Date>(value: .now)
+    var rxSelectedRoutines = BehaviorRelay<[String]>(value: [])
+        
     func configureData() {
-        self.registerListeners()
+        registerListeners()
         switch actionEditorMode {
         case let .edit(action):
-            self.configureTodayContents(action)
-            Utils.dateToE(action.dueDate!)
+            configureTodayContents(action)
         default:
-            // 신규 데이터 생성시
-            // 초기 값 설정
-            self.selectedEndDate = self.selectedDueDate + 86400 * 30
+            _ = rxSelectedDueDate.map {
+                $0 + 86400 * 30
+            }.bind(to: rxSelectedEndDate)
+                .disposed(by: disposeBag)
             break
         }
     }
@@ -100,9 +71,19 @@ class AddActionViewModel: AddActionViewModelType {
              ActionData.routines: action.routines]
         )
         
-        self.selectedDueDate = action.dueDate ?? self.selectedDueDate
-        self.selectedDueTime = action.dueTime ?? self.selectedDueTime
-        self.selectedEndDate = action.endDate ?? self.selectedEndDate
+        _ = Observable.just(action.dueDate ?? rxSelectedDueDate.value)
+            .bind(to: rxSelectedDueDate)
+            .disposed(by: disposeBag)
+        
+        if let dueTime = action.dueTime {
+            _ = Observable.just(dueTime).bind(to: rxSelectedDueTime)
+        }
+        if let endDate = action.endDate {
+            _ = Observable.just(endDate).bind(to: rxSelectedEndDate)
+        }
+        if let routines = action.routines {
+          _ = Observable.just(routines).bind(to: rxSelectedRoutines)
+        }
     }
     
     private func registerListeners() {
@@ -148,9 +129,11 @@ class AddActionViewModel: AddActionViewModelType {
                     self.routineInsertActions(action, extendingOption: true)
                 } else {
                     CoreDataManager.shared.editAction(action)
+                    unlink(action)
                 }
             } else {
                 CoreDataManager.shared.editAction(action)
+                unlink(action)
             }
         case .new:
             guard let routines = routines else { return }
@@ -172,6 +155,20 @@ class AddActionViewModel: AddActionViewModelType {
             } else {
                 CoreDataManager.shared.insertAction(action)
             }
+        }
+    }
+    
+    private func unlink(_ action: ActionItem) {
+        if let nextId = action.rNextAction  {
+            if let beforeId = action.rBeforeAction {
+                _ = CoreDataManager.shared.editAction(beforeId, rNextAction: nextId)
+                _ = CoreDataManager.shared.editAction(nextId, rBeforeAction: beforeId)
+                _ = CoreDataManager.shared.editAction(action.id, rNextAction: nil)
+                _ = CoreDataManager.shared.editAction(action.id, rBeforeAction: nil)
+            }
+        } else if let beforeId = action.rBeforeAction {
+            _ = CoreDataManager.shared.editAction(beforeId, rNextAction: nil)
+            _ = CoreDataManager.shared.editAction(action.id, rBeforeAction: nil)
         }
     }
     
@@ -200,7 +197,7 @@ class AddActionViewModel: AddActionViewModelType {
         switch actionEditorMode {
         case .new:
             print("error 루틴액션인데 new")
-        case .edit(let action):
+        case .edit(_):
             guard let routines = routines else { return }
             // 현재 날짜로부터 뒤 실천 다 삭제하고, 새로 추가
             self.deleteRoutines()
@@ -272,7 +269,7 @@ class AddActionViewModel: AddActionViewModelType {
                     CoreDataManager.shared.insertAction(action)
                     if let nextId = nextActionId  {
                         beforeActionId = action.id
-                        CoreDataManager.shared.editAction(nextId, rBeforeAction: beforeActionId) // 링크 이어주기
+                        _ = CoreDataManager.shared.editAction(nextId, rBeforeAction: beforeActionId) // 링크 이어주기
                     }
                     nextActionId = action.id
                 }
@@ -300,7 +297,7 @@ class AddActionViewModel: AddActionViewModelType {
                                     rBeforeAction: actionItem.rBeforeAction)
             CoreDataManager.shared.editAction(action)
             guard let nextId = nextActionId else { return }
-            CoreDataManager.shared.editAction(nextId, rBeforeAction: action.id) // 마지막 -1 실천은 before가 없음
+            _ = CoreDataManager.shared.editAction(nextId, rBeforeAction: action.id) // 마지막 -1 실천은 before가 없음
             self.changeRoutineEndDate(id: nextId)
         } else {
             // 일반적인 추가 상황
@@ -323,7 +320,7 @@ class AddActionViewModel: AddActionViewModelType {
                                     rBeforeAction: actionItem.rBeforeAction)
             CoreDataManager.shared.insertAction(action)
             guard let nextId = nextActionId else { return }
-            CoreDataManager.shared.editAction(nextId, rBeforeAction: action.id)
+            _ = CoreDataManager.shared.editAction(nextId, rBeforeAction: action.id)
         }
     }
     
@@ -334,12 +331,12 @@ class AddActionViewModel: AddActionViewModelType {
             // 루틴 중간에 삭제가 되는 경우, 앞 뒤를 이어줘야함.
             if let beforeAction = action.rBeforeAction, let nextAction = action.rNextAction {
                 if !beforeAction.isEmpty && !nextAction.isEmpty {
-                    CoreDataManager.shared.editAction(beforeAction, rNextAction: nextAction)
-                    CoreDataManager.shared.editAction(nextAction, rBeforeAction: beforeAction)
+                    _ = CoreDataManager.shared.editAction(beforeAction, rNextAction: nextAction)
+                    _ = CoreDataManager.shared.editAction(nextAction, rBeforeAction: beforeAction)
                 }
             } else if let beforeAction = action.rBeforeAction { // 루틴의 마지막을 지우는경우
                 if !beforeAction.isEmpty {
-                    CoreDataManager.shared.editAction(beforeAction, rNextAction: nil)
+                    _ = CoreDataManager.shared.editAction(beforeAction, rNextAction: nil)
                     self.changeRoutineEndDate(id: beforeAction)
                 }
             }
@@ -359,7 +356,7 @@ class AddActionViewModel: AddActionViewModelType {
             var actionId = action.id
 
             if let beforeId = action.rBeforeAction {
-                CoreDataManager.shared.editAction(beforeId, rNextAction: nil)
+                _ = CoreDataManager.shared.editAction(beforeId, rNextAction: nil)
                 // 중간부터 제거하는거라면 이전 링크 제거
                 self.changeRoutineEndDate(id: beforeId)
             }
@@ -399,7 +396,7 @@ class AddActionViewModel: AddActionViewModelType {
         if let beforeActionDueDate = CoreDataManager.shared.fetchAction(id: lastId)?.dueDate {
             var actionId = lastId
             while actionId != nil {
-                CoreDataManager.shared.editAction(actionId, endDate: beforeActionDueDate)
+                _ = CoreDataManager.shared.editAction(actionId, endDate: beforeActionDueDate)
                 guard let action = CoreDataManager.shared.fetchAction(id: actionId) else { return }
                 guard let beforeAction = action.rBeforeAction else { return }
                 actionId = beforeAction
@@ -410,11 +407,7 @@ class AddActionViewModel: AddActionViewModelType {
     
     @objc private func routinesSelectNotification(_ notification: Notification) {
         guard let routines = notification.object as? [String] else { return }
-        self.selectedRoutines = routines
-    }
-    
-    func dueDateChanged(_ date: Date) {
-        self.selectedDueDate = date
+        _ = Observable.just(routines).bind(to: rxSelectedRoutines)
     }
     
     func getDBTitleArray() -> [String] {
@@ -433,9 +426,11 @@ class AddActionViewModel: AddActionViewModelType {
 protocol AddActionViewModelType {
     var delegate: AddActionDelegate? { get set }
     var actionEditorMode: ActionEditorMode { get set }
-    var selectedDueDate: Date { get set }
+    var rxSelectedDueDate: BehaviorRelay<Date> { get }
+    var rxSelectedDueTime: BehaviorRelay<Date> { get }
+    var rxSelectedEndDate: BehaviorRelay<Date> { get }
+    
     func configureData()
-    func dueDateChanged(_ date: Date)
     func existNextAction() -> Bool
     func saveAction(title: String,
                     emoji: String?,

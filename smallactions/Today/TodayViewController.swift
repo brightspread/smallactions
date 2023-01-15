@@ -7,11 +7,15 @@
 
 import UIKit
 import CoreData
+import RxSwift
+import RxCocoa
 
 class TodayViewController: UIViewController {
     
-    lazy var todayViewModel = { TodayViewModel() }()
-    lazy var calendarViewModel = { CalendarViewModel() }()
+    var todayViewModel = TodayViewModel()
+    var calendarViewModel = CalendarViewModel()
+    
+    var disposeBag = DisposeBag()
 
     lazy var confettiView = ConfettiView(frame: self.view.bounds)
 
@@ -26,24 +30,53 @@ class TodayViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initViewModel()
-        self.configureTodayView()
         self.configureViews()
         self.registerHandlers()
+        self.configureRx()
+    }
+    
+    private func configureRx() {
+        _ = todayViewModel.rxActions
+            .subscribe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] _ in
+                self?.updateCalendar()
+                Utils.triggerNotification()
+            })
+            .disposed(by: disposeBag)
+        
+        todayViewModel.rxActions
+            .asDriver(onErrorJustReturn: [])
+            .drive(actionTableView.rx.items) { (tableView, row, action) -> UITableViewCell in
+                if action.dueTime != nil {
+                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "ActionBasicWithTimeTableViewCell", for: IndexPath(row: row, section: 0)) as? ActionBasicWithTimeTableViewCell else { return UITableViewCell() }
+                    cell.action = action
+                    return cell
+                } else {
+                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "ActionBasicTableViewCell", for: IndexPath(row: row, section: 0)) as? ActionBasicTableViewCell else { return UITableViewCell() }
+                    cell.action = action
+                    return cell
+                }
+            }.disposed(by: disposeBag)
+        
+        Observable.zip(actionTableView.rx.modelSelected(Action.self),
+                       actionTableView.rx.itemSelected)
+        .bind { [weak self] (action, indexPath) in
+            self?.actionTableView.deselectRow(at: indexPath, animated: true)
+            self?.showEditActionView(action)
+        }.disposed(by: disposeBag)
+        
+        todayViewModel.rxSelectedDate
+            .map { Utils.getYearMonth($0) }
+            .asDriver(onErrorJustReturn: "")
+            .drive(monthLabel.rx.text)
+            .disposed(by: disposeBag)
     }
     
     private func initViewModel() {
-        self.todayViewModel.delegate = self
-        self.todayViewModel.configureData()
         self.calendarViewModel.delegate = self
     }
     
-    private func configureTodayView() {
-        self.monthLabel.text = Utils.getYearMonth(self.todayViewModel.selectedDate)
-    }
-    
     private func configureViews() {
-        self.actionTableView.dataSource = self
-        self.actionTableView.delegate = self
         self.calendarCollectionView.dataSource = self
         self.calendarCollectionView.delegate = self
     }
@@ -72,13 +105,18 @@ class TodayViewController: UIViewController {
     @objc private func addButtonTapped() {
         guard let viewController = AddActionViewController.buildAddActionViewController(self)
         else { return }
-        viewController.viewModel.selectedDueDate = self.todayViewModel.selectedDate
+        _ = Observable.just(todayViewModel.rxSelectedDate.value)
+            .bind(to: viewController.viewModel.rxSelectedDueDate)
+            .disposed(by: disposeBag)
+//        viewController.viewModel.selectedDueDate = todayViewModel.rxSelectedDate.value
         self.present(viewController, animated: true, completion: nil)
     }
     
     @objc private func todayLabelTapped() {
         self.calendarViewModel.selectDate(Date.now)
-        self.todayViewModel.selectedDate = Date.now
+        _ = Observable.just(Date.now)
+            .bind(to: todayViewModel.rxSelectedDate)
+            .disposed(by: disposeBag)
     }
 
     private func showEditActionView(_ action: Action?) {
@@ -88,41 +126,6 @@ class TodayViewController: UIViewController {
             viewController.viewModel.actionEditorMode = .edit(action)
         }
         self.present(viewController, animated: true, completion: nil)
-    }
-}
-
-extension TodayViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.todayViewModel.actions.count
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let action = self.todayViewModel.actions[indexPath.row]
-        if action.dueTime != nil {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: ActionBasicWithTimeTableViewCell.reuseIdentifier, for: indexPath) as? ActionBasicWithTimeTableViewCell else { return UITableViewCell() }
-            cell.selectionStyle = .none
-            cell.action = action
-            return cell
-        } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: ActionBasicTableViewCell.reuseIdentifier, for: indexPath) as? ActionBasicTableViewCell else { return UITableViewCell() }
-            cell.selectionStyle = .none
-            cell.action = action
-            return cell
-        }
-    }
-}
-
-extension TodayViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let action = self.todayViewModel.actions[indexPath.row]
-        self.showEditActionView(action)
-    }
-}
-
-extension TodayViewController: TodayViewDelegate {
-    func actionDidChanged() {
-        self.updateCalendar()
-        Utils.triggerNotification()
     }
 }
 
@@ -138,7 +141,6 @@ extension TodayViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayDayCell.reuseIdentifier,
                                                       for: indexPath) as! TodayDayCell
         cell.day = day
-//        cell.actionProgress = self.viewModel.getActionProgress(day.date)
         return cell
     }
     
@@ -148,20 +150,16 @@ extension TodayViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         let day = self.calendarViewModel.days[indexPath.row]
-        self.todayViewModel.selectedDate = day.date
+        _ = Observable.just(day.date)
+            .bind(to: todayViewModel.rxSelectedDate)
         self.calendarViewModel.selectDate(day.date)
-//        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-        //        baseDate = baseDate
-        //        collectionView.reloadData()
-        //    dismiss(animated: true, completion: nil)
+
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 36, height: collectionView.frame.height)
-//        return self.calendarViewModel.getCalendarSize(width: collectionView.frame.width,
-//                                              height: collectionView.frame.height)
     }
     
     
@@ -182,7 +180,6 @@ extension TodayViewController: CalendarViewDelegate {
             }
         }
         self.actionTableView.reloadData()
-        self.configureTodayView()
     }
     
     func valueChanged(_ dic: Dictionary<CalendarData, Any>) {
@@ -195,7 +192,8 @@ extension TodayViewController: CalendarViewDelegate {
 //                self.selectedDateLabel.text = Utils.monthDate(value)
             case .selectedData:
                 guard let value = value as? Date else { return }
-                self.todayViewModel.selectedDate = value
+                _ = Observable.just(value)
+                    .bind(to: todayViewModel.rxSelectedDate)
 //                self.monthLabel.text = Utils.getMonth(value)
 //                self.yearLabel.text = Utils.getYear(value)
 //                self.selectedDateLabel.text = Utils.monthDate(value)

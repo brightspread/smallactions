@@ -6,7 +6,8 @@ target 'smallactions' do
   use_frameworks!
 
   pod "SearchTextField"
-
+  pod "RxSwift"
+  pod "RxCocoa"
   # Pods for smallactions
 
 end

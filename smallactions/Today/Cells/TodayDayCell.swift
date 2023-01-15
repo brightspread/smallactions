@@ -22,13 +22,6 @@ class TodayDayCell: UICollectionViewCell {
             self.updateSelectionStatus()
         }
     }
-    
-//    var actionProgress: Double = 0 {
-//        didSet {
-//            self.updateActionProgress()
-//        }
-//    }
-
 }
 
 
