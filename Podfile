@@ -8,6 +8,11 @@ target 'smallactions' do
   pod "SearchTextField"
   pod "RxSwift"
   pod "RxCocoa"
+  
+  target 'smallactionsTests' do
+    pod 'RxTest'
+    pod 'RxNimble'
+  end
   # Pods for smallactions
 
 end

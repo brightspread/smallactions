@@ -71,9 +71,8 @@ class AddActionViewModel: AddActionViewModelType {
              ActionData.routines: action.routines]
         )
         
-        _ = Observable.just(action.dueDate ?? rxSelectedDueDate.value)
-            .bind(to: rxSelectedDueDate)
-            .disposed(by: disposeBag)
+        rxSelectedDueDate.accept(action.dueDate ?? rxSelectedDueDate.value)
+        rxSelectedDueTime.accept(action.dueTime ?? rxSelectedDueTime.value)
         
         if let dueTime = action.dueTime {
             _ = Observable.just(dueTime).bind(to: rxSelectedDueTime)

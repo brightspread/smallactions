@@ -9,10 +9,13 @@ import UIKit
 import MessageUI
 
 class Utils {
+    
+    static let icloud = "icloud"
     // MARK: Time
     
     static func ymdEToDate(_ strDate: String) -> Date? {
         if strDate.isEmpty { return nil }
+        Utils.icloud
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy년 M월 d일 EEEEE"
         dateFormatter.locale = Locale(identifier: "ko_KR")
@@ -181,7 +184,7 @@ class Utils {
     
     static func requestNotificationuthorization() {
         let userNotiCenter = UNUserNotificationCenter.current()
-        let notiAuthOptions = UNAuthorizationOptions(arrayLiteral: [.alert, .badge, .sound])
+        let notiAuthOptions = UNAuthorizationOptions(arrayLiteral: [.alert, .badge, .sound, .provisional])
         userNotiCenter.requestAuthorization(options: notiAuthOptions) { (success, error) in
             if let error = error {
                 print(#function, error)

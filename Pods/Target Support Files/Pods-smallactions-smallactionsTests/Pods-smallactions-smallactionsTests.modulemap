@@ -1,0 +1,6 @@
+framework module Pods_smallactions_smallactionsTests {
+  umbrella header "Pods-smallactions-smallactionsTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

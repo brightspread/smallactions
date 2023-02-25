@@ -163,7 +163,7 @@ private extension CalendarViewModel {
             .map { day in
                 let isWithinDisplayedMonth = day >= offsetInInitialRow
                 let dayOffset =
-                isWithinDisplayedMonth ?
+                isWithinDisplayedMonth ?    
                 day - offsetInInitialRow :
                 -(offsetInInitialRow - day)
                 

@@ -1,30 +1,53 @@
 PODS:
+  - Nimble (10.0.0)
+  - RxBlocking (6.5.0):
+    - RxSwift (= 6.5.0)
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
+  - RxNimble (6.0.0):
+    - RxNimble/RxBlocking (= 6.0.0)
+  - RxNimble/Core (6.0.0):
+    - Nimble (~> 10.0)
+    - RxSwift (~> 6.0)
+  - RxNimble/RxBlocking (6.0.0):
+    - RxBlocking
+    - RxNimble/Core
   - RxRelay (6.5.0):
     - RxSwift (= 6.5.0)
   - RxSwift (6.5.0)
+  - RxTest (6.5.0):
+    - RxSwift (= 6.5.0)
   - SearchTextField (1.2.4)
 
 DEPENDENCIES:
   - RxCocoa
+  - RxNimble
   - RxSwift
+  - RxTest
   - SearchTextField
 
 SPEC REPOS:
   trunk:
+    - Nimble
+    - RxBlocking
     - RxCocoa
+    - RxNimble
     - RxRelay
     - RxSwift
+    - RxTest
     - SearchTextField
 
 SPEC CHECKSUMS:
+  Nimble: 5316ef81a170ce87baf72dd961f22f89a602ff84
+  RxBlocking: 04b5fd28bb5ea49f7d64b80db8bbfe50d9cc1c7d
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxNimble: 04caf11bd7e8f7669d68ef69b8fdfe41552c1ef2
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
+  RxTest: eb2d23adefc5a5ebf5779c7792fa3edfe6ebcc17
   SearchTextField: 40dc3cc57def5a211f263cac263622c163bbc25a
 
-PODFILE CHECKSUM: cb35d6368ef35e5cfadb737aba2a9b5db874e2e4
+PODFILE CHECKSUM: a54bcae6ae787355872c088c47eac402ab05d157
 
 COCOAPODS: 1.11.3
